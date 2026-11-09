@@ -186,6 +186,7 @@ jobs:
               "jobs": {"api": env["API_RESULT"], "ui": env["UI_RESULT"]},
               "failure_count": len(failures),
               "failures": failures[:30],
+              "next": "请在仓库里运行 python3 tools/ask_cursor.py status。失败用例或 PR 对得上已有案例时，用 followup 把本次摘要附到该案例；只有 status 显示没有案例时才 prepare。不要为同一问题新开 Cloud Agent。",
           }
           request = urllib.request.Request(
               env["GROKBOT_WEBHOOK_URL"],
