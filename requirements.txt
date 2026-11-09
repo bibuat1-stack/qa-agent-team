@@ -1,0 +1,9 @@
+# Python 3.10+（CI 使用 3.12）。UI 用例还需要：python -m playwright install --with-deps chromium
+pytest>=9.0,<10
+requests>=2.32,<3
+allure-pytest>=2.15,<3
+pytest-html>=4.1,<5
+pytest-rerunfailures>=16.0,<17
+pytest-playwright>=0.10,<1
+python-dotenv>=1.0,<2
+PyYAML>=6.0.2,<7
