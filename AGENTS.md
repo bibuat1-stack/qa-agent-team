@@ -4,12 +4,14 @@
 
 ## 仓库是什么
 
-这是一个测试自动化仓库，被测系统包括 Web UI 和 HTTP 接口。它服务于由四个 Grok Bot 组成的「代理团队」：
+这是一个测试自动化仓库，被测系统包括 Web UI 和 HTTP 接口。它服务于「代理团队」：下面四个是核心角色，团队里还可以有其他 Grok Bot。
 
 - 需求分析师：读取 Jira 需求和 Confluence 文档，产出测试点。
 - 自动化工程师：根据测试点编写和维护本仓库的用例。
 - 回归执行员：执行回归，收集报告、截图和 trace。
 - 失败分诊员：对失败归类和复现，起草缺陷。
+
+所有机器人只通过 `tools/ask_cursor.py` 升级，并用 `--owner` 写上自己的名字。没有单独角色文件的机器人按 `grokbot/bots/0-技能-Cursor专家升级.md` 里的通用规则执行。
 
 协作方式：
 
@@ -46,7 +48,7 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：同一案例持续推进（prepare / followup / record / status / api），脱敏、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
-grokbot/bots/             四个 Grok Bot 的角色设定和「Cursor专家升级」技能（粘贴到 Grok Bot 中使用）
+grokbot/bots/             四个核心角色的设定，以及所有机器人共用的「Cursor专家升级」技能（粘贴到每个会升级的 Grok Bot）
 .cursor/skills/           Cursor 代理技能：api-automation-pytest、api-case-debugger
 .github/workflows/regression.yml  CI 回归
 run.py                    统一执行入口
@@ -122,7 +124,7 @@ pytest tests/ui --headed --slowmo 500
 
 ## 升级到 Cursor Cloud Agent
 
-Grok Bot 只通过 `tools/ask_cursor.py` 升级。同一个问题始终是同一个案例（同一个 hash、同一个 Cloud Agent、同一个 Pull Request），不再按 24 小时另开。完整流程见 `grokbot/bots/0-技能-Cursor专家升级.md`。合并后必须把 `grokbot/bots/*.md` 重新粘贴到四个 Grok Bot。
+所有 Grok Bot 只通过 `tools/ask_cursor.py` 升级，并用 `--owner` 标明自己是谁。同一个问题始终是同一个案例（同一个 hash、同一个 Cloud Agent、同一个 Pull Request），不再按 24 小时另开。完整流程见 `grokbot/bots/0-技能-Cursor专家升级.md`；没有单独角色文件的机器人按该文件里的通用规则执行。合并后必须把 `grokbot/bots/*.md` 重新粘贴到每一个使用该技能的机器人。
 
 1. `prepare`：脱敏证据，按失败特征（含 pytest 节点 id）计算 hash。新案例扣减每日额度（默认 3 次，只计新案例和 `followup --reopen`），在 `/workspace/qa/escalations/<hash>/` 下生成 `brief.md`、`problem.md`、`case.md` 和 `request.json`（`kind` 为 `create`）。hash 已存在时不另开：进行中返回 duplicate（退出码 3），已有结论返回 continue（退出码 0），不重复扣额度。
 2. `followup`：验证失败或需要补充时，在同一 hash 上写 `followup.md`，由 Bot 粘贴进原来的 Cloud Agent 卡片。默认每个案例最多追问 3 次（`ASK_CURSOR_FOLLOWUPS`），不占每日新案例额度。次数用尽后案例阻塞；只有人明确要求时才 `followup --reopen`（占用 1 次每日额度，不换 hash）。

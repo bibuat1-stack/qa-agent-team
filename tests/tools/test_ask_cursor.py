@@ -755,6 +755,17 @@ def test_refund_keeps_pending_case_and_returns_budget(tmp_path, capsys):
     assert budget_used(root) == 0
 
 
+def test_owner_accepts_a_non_qa_bot_name(tmp_path, capsys):
+    root = tmp_path / "esc"
+    log = write_log(tmp_path, "log.txt", failure_log(NODE_A))
+    code, data = prepare(capsys, root, log, owner="运维巡检员")
+    assert code == 0
+    item = load_ledger(root)["items"][data["hash"]]
+    assert item["owner"] == "运维巡检员"
+    assert len(item["owner"]) <= 40
+    assert "运维巡检员" in (root / data["hash"] / "case.md").read_text(encoding="utf-8")
+
+
 def test_followup_refuses_fix_mode_without_repo(tmp_path, capsys):
     root = tmp_path / "esc"
     log = write_log(tmp_path, "log.txt", "需求讨论记录里没有 pytest 节点，只是一句说明。\n")

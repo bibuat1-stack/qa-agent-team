@@ -1,4 +1,4 @@
-请把下面的内容保存为私有技能，名称「Cursor专家升级」，并在四个 QA Bot 上都启用。
+请把下面的内容保存为私有技能，名称「Cursor专家升级」，并在每一个可能需要升级的 Grok Bot 上都启用。
 
 # 技能：Cursor专家升级
 
@@ -15,6 +15,15 @@
 - 服务或环境整体故障（所有接口 5xx、DNS 错误、测试账号过期）：直接报告给我。
 - 重跑一次就通过的用例：标记为 flaky，记录证据。
 - 同一问题已经有案例：不要再 prepare 一个新的 Cloud Agent。先 status，再在原案例上 followup。
+
+## 没有单独角色文件的机器人
+仓库里的四个角色文件只写核心职责。没有单独角色文件的机器人要升级时，同样用本技能：
+- 每次 prepare 和 followup 都带 `--owner <你的机器人名字>`。
+- 先运行 `python3 tools/ask_cursor.py status`。开放案例对得上（同一个失败用例节点、同一个 PR，或同一个问题）就 followup，不要 prepare。
+- 只有 status 显示没有案例时才 prepare。
+- 追问次数用尽：在 GitHub 开 issue，把 Cloud Agent 卡片交给人（Open in Cursor），不要再 followup。
+- 没有人批准，不要改共享框架代码（conftest.py、common/、config/、Page Object、CI 配置）。
+- 默认用 advise 模式。只有必须改本仓库代码时才用 fix，并带 `--repo`。
 
 ## 步骤
 1. 先找回案例（电脑重建后也要做）：
