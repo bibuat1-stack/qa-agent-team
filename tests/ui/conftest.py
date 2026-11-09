@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import pytest
+from playwright.sync_api import Page
 
 from config.settings import settings
+from pages.example_home_page import ExampleHomePage
 
 
 @pytest.fixture(scope="session")
@@ -18,3 +20,8 @@ def ui_credentials() -> dict[str, str]:
     if not (settings.UI_USERNAME and settings.UI_PASSWORD):
         pytest.skip("未设置 UI_USERNAME / UI_PASSWORD")
     return {"username": settings.UI_USERNAME, "password": settings.UI_PASSWORD}
+
+
+@pytest.fixture
+def home_page(page: Page, base_url: str) -> ExampleHomePage:
+    return ExampleHomePage(page, base_url)
