@@ -4,20 +4,19 @@
 
 ## 仓库是什么
 
-这是一个测试自动化仓库，被测系统包括 Web UI 和 HTTP 接口。它服务于由四个 Grok Bot 组成的「代理团队」：
+本仓库是共用自动化框架与 Cursor 技术支援仓，演示目标包括 Web UI 和 HTTP 接口。业务测试由各项目 Grok Bot（nova、T8T、GO、M3 等）在各自 Notion 知识库里执行，不在本仓库组队。
 
-- 需求分析师：读取 Jira 需求和 Confluence 文档，产出测试点。
-- 自动化工程师：根据测试点编写和维护本仓库的用例。
-- 回归执行员：执行回归，收集报告、截图和 trace。
-- 失败分诊员：对失败归类和复现，起草缺陷。
+2026-11-10 起停用「四角色流水线」，不要恢复，也不要按这些名字再组 Bot：需求分析师、自动化工程师、回归执行员、失败分诊员。它们与各项目既有的主管、执行、拆分、回归重叠，职责文件已删除。
 
 协作方式：
 
-- Grok Bot 在 Debian 云电脑上把本仓库克隆到 `/workspace/qa/repo`，用 `tools/bootstrap_bot_computer.sh` 重建工具链。
-- Bot 自己解决不了的问题，通过 `tools/ask_cursor.py` 升级给 Cursor Cloud Agent。Cloud Agent 负责诊断，或者在新分支上修改代码并打开 PR，由人审核合并。
-- GitHub Actions 的 `regression` 工作流负责回归，有失败时把摘要发给 Grok Bot。
+- 总控分派任务。各项目机器人在自己的 Notion 知识库里做业务测试，项目之间隔离。
+- 项目机器人在 Debian 云电脑上把本仓库克隆到 `/workspace/qa/repo`，用 `tools/bootstrap_bot_computer.sh` 重建工具链。
+- 自动化卡点经 `tools/ask_cursor.py` 升级到本仓库下的 Cursor Cloud Agent（Ask / Plan / Debug / Multitask）。一问题一案例一 Agent 一 PR。Cloud Agent 不合并 PR，不私自改业务产品代码。
+- 自动化踩坑知识库只收集脱敏后的问题与解法，不探路、不写脚本、不连跑。
+- GitHub Actions 的 `regression` 工作流负责本仓库演示用例的回归，有失败时把摘要发给 Grok Bot。
 
-现有用例只对接演示目标（接口：JSONPlaceholder；UI：playwright.dev），用来证明框架和流水线能跑通。接入真实被测系统时，替换 `config/environment.py` 中的地址表，删除示例用例、示例页面和示例数据，以及 `pytest.ini` 中的示例 marker。
+现有用例只对接演示目标（接口：JSONPlaceholder；UI：playwright.dev），用来证明框架和 CI 回归能跑通。接入真实被测系统时，替换 `config/environment.py` 中的地址表，删除示例用例、示例页面和示例数据，以及 `pytest.ini` 中的示例 marker。
 
 ## 目录结构
 
@@ -46,8 +45,8 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：脱敏、去重、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
-grokbot/                  bots 角色设定 + skills 共用技能备份；业务记忆点仍在各项目 Notion
-  bots/                   四个 Grok Bot 的角色设定和「Cursor专家升级」技能（粘贴到 Grok Bot 中使用）
+grokbot/                  共用技能备份与升级技能；业务记忆点仍在各项目 Notion
+  bots/                   「Cursor专家升级」技能原文。四角色职责已删除，不要恢复
   skills/                 Grok 共用技能的脱敏备份（SKILL.md）
 .cursor/skills/           Cursor 代理技能：api-automation-pytest、api-case-debugger
 .github/workflows/regression.yml  CI 回归
