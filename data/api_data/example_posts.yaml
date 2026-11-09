@@ -1,0 +1,5 @@
+# 示例请求数据（演示站点 JSONPlaceholder），接入被测系统后替换。
+create_post:
+  title: 自动化测试帖子
+  body: 由 qa-agent-team 示例用例创建
+  userId: 1

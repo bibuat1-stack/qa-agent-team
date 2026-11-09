@@ -1,0 +1,17 @@
+# 示例数据驱动用例（演示站点 JSONPlaceholder），接入被测系统后替换。
+# 每条数据生成一条参数化用例，case_id 会出现在用例 ID 和报告里。
+get_post_by_id:
+  - case_id: API-POSTS-002-01
+    name: 查询存在的帖子
+    post_id: 1
+    expected_status: 200
+    expected_user_id: 1
+  - case_id: API-POSTS-002-02
+    name: 查询另一个用户的帖子
+    post_id: 11
+    expected_status: 200
+    expected_user_id: 2
+  - case_id: API-POSTS-002-03
+    name: 查询不存在的帖子
+    post_id: 99999
+    expected_status: 404
