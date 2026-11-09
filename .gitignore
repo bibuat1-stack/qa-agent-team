@@ -1,0 +1,28 @@
+# 虚拟环境
+.venv/
+venv/
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# 本地环境变量和密钥（.env.example 需要提交）
+.env
+.env.*
+!.env.example
+
+# 报告和日志：保留目录里的 .gitkeep，生成的内容不提交
+reports/*
+!reports/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# 在 reports/ 之外生成的 Allure 结果和报告（例如 CI 合并时、本地 allure generate）
+allure-results/
+allure-report/
+
+# Playwright 输出（pytest-playwright 默认写到 test-results/）
+test-results/
+playwright-report/
+blob-report/

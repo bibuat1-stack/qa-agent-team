@@ -1,0 +1,7 @@
+# 文本文件在仓库里统一存为 LF；其他文件在 Windows 检出时按本机 Git 设置转换。
+* text=auto
+
+# shell 脚本和 YAML 在任何平台检出都保持 LF（Debian 上的 bash 不接受 CRLF）。
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
