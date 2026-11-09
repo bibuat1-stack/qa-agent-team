@@ -151,7 +151,8 @@ Grok Bot 只通过 `tools/ask_cursor.py` 升级，完整流程见 `grokbot/bots/
 - 小而专注：一个 PR 只解决一个问题。
 - 提交信息使用 Conventional Commits：`feat`、`fix`、`test`、`refactor`、`docs`、`chore`、`ci`，例如 `fix(api): 修正帖子列表的字段路径`。
 - 不改与任务无关的文件。除非任务明确要求，不改测试数据（`data/`）和 CI 配置（`.github/`）。
-- 在新分支上提交并打开 PR，不直接推送 main，也不自己合并。
+- 在新分支上提交并打开 PR，不直接推送 main。用例、框架、CI 和其他业务改动不自己合并，等人审核。
+- `grokbot/skills/` 的技能备份更新频繁。一次改动只包含 `grokbot/skills/`，以及为这次备份同步的 `grokbot/README.md` 或这里的目录说明时，CI 通过后由 Cloud Agent 自行合并该 PR。夹带其他目录的改动仍等人审核。
 - PR 描述写清楚改了什么、根因是什么、怎么验证的（命令和结果）。改动共享框架代码（`conftest.py`、`common/`、`config/`、`pages/base_page.py`）时，说明影响范围。
 - 不提交 `.env`、令牌、密码、报告或日志。
 

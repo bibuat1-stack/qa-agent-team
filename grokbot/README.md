@@ -22,7 +22,7 @@
 1. 业务任务：先查本项目 Notion 知识库。
 2. 写/改自动化：遵守仓库根 `AGENTS.md` 与 `.cursor/skills/`。
 3. 遇技术卡点：在 **qa-agent-team** 仓库下开 Cloud Agent（不要 No Repo），走 `tools/ask_cursor.py`。
-4. 同步技能：改完 Grok 技能后，把对应 `SKILL.md` 更新进本目录并开 PR。
+4. 同步技能：改完 Grok 技能后，把对应 `SKILL.md` 更新进本目录并开 PR。只含技能备份（可带本 README 或 `AGENTS.md` 里对应的一两句说明）时，CI 通过后由 Cloud Agent 自行合并进 main。
 
 ## 项目隔离
 
