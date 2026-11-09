@@ -167,3 +167,4 @@ python -m playwright install --with-deps chromium
 - 云环境里通常没有被测系统的令牌和账号，使用 `ui_credentials` fixture 的用例会自动跳过。不要编造或写死凭据来让用例跑通。
 - 被测地址在云环境中访问不到（例如只在公司内网）时，在 PR 里说明无法在云端验证，不要修改用例去绕过。
 - 不要创建或提交 `.env`；`reports/` 和 `logs/` 下生成的内容已被 `.gitignore` 忽略。
+联动测试
