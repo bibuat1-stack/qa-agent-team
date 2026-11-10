@@ -1,0 +1,472 @@
+version: 1
+note: 真实 id 只放 Drive 上的 id-map.yaml，不进 Git。下面的账号槽故意留空。
+bots:
+  - stable_name: "GO测试执行"
+    template: "bots/GO测试执行.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3+支付提单回归"
+    template: "bots/M3+支付提单回归.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova测试主管"
+    template: "bots/nova测试主管.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T提单回归"
+    template: "bots/T8T提单回归.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3+支付周报"
+    template: "bots/M3+支付周报.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3+支付知识库总控"
+    template: "bots/M3+支付知识库总控.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3+支付拆分任务"
+    template: "bots/M3+支付拆分任务.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova拆分任务"
+    template: "bots/nova拆分任务.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova日报"
+    template: "bots/nova日报.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "King"
+    template: "bots/King.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "回单专项测试"
+    template: "bots/回单专项测试.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova测试执行"
+    template: "bots/nova测试执行.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3测试主管 · M3 QA"
+    template: "bots/M3测试主管 · M3 QA.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T日报"
+    template: "bots/T8T日报.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T拆分任务"
+    template: "bots/T8T拆分任务.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova知识库总控"
+    template: "bots/nova知识库总控.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "自动化踩坑知识库 · 跨项目自动化问题与方案汇总"
+    template: "bots/自动化踩坑知识库 · 跨项目自动化问题与方案汇总.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova提单回归"
+    template: "bots/nova提单回归.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "面试指导"
+    template: "bots/面试指导.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "PPT制作"
+    template: "bots/PPT制作.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T测试执行"
+    template: "bots/T8T测试执行.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3+支付测试执行"
+    template: "bots/M3+支付测试执行.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "tg消息获取巡查"
+    template: "bots/tg消息获取巡查.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "Vilinnel"
+    template: "bots/Vilinnel.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "GO电子"
+    template: "bots/GO电子.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "GO知识库总控"
+    template: "bots/GO知识库总控.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T站点走查"
+    template: "bots/T8T站点走查.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "M3+支付需求分析"
+    template: "bots/M3+支付需求分析.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T需求分析"
+    template: "bots/T8T需求分析.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T测试主管"
+    template: "bots/T8T测试主管.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "nova需求分析"
+    template: "bots/nova需求分析.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+  - stable_name: "T8T知识库总控"
+    template: "bots/T8T知识库总控.md"
+    accounts:
+      A: {agent_id: ""}
+      B: {agent_id: ""}
+skills:
+  - stable_name: "accessibility"
+    folder: "accessibility"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "agent-browser"
+    folder: "agent-browser"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "api-contract-testing"
+    folder: "api-contract-testing"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "automation-regression"
+    folder: "automation-regression"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "box-ui-speed"
+    folder: "box-ui-speed"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "browser-qa"
+    folder: "browser-qa"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "bug-reproduction-brief"
+    folder: "bug-reproduction-brief"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "ceopay-collection-payout-qa"
+    folder: "ceopay-collection-payout-qa"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "cli-for-agents"
+    folder: "cli-for-agents"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "Cursor专家升级"
+    folder: "cursor"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "diagnosing-bugs"
+    folder: "diagnosing-bugs"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "e2e-debugger"
+    folder: "e2e-debugger"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "evidence-hygiene"
+    folder: "evidence-hygiene"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "exploratory-testing-techniques"
+    folder: "exploratory-testing-techniques"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "find-skills"
+    folder: "find-skills"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "first-run-bug-repro"
+    folder: "first-run-bug-repro"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "graphify"
+    folder: "graphify"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "machine-setup"
+    folder: "machine-setup"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "playwright-best-practices"
+    folder: "playwright-best-practices"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "playwright-cli"
+    folder: "playwright-cli"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "playwright-report-triage"
+    folder: "playwright-report-triage"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "product-rundown"
+    folder: "product-rundown"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "product-walk"
+    folder: "product-walk"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "qa-scripts"
+    folder: "qa-scripts"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "qa-setup"
+    folder: "qa-setup"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "repro-from-screenshot"
+    folder: "repro-from-screenshot"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "repro-from-ticket"
+    folder: "repro-from-ticket"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "reproduce-bug-report"
+    folder: "reproduce-bug-report"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "review-evidence"
+    folder: "review-evidence"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "run-test-session"
+    folder: "run-test-session"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "session-retro"
+    folder: "session-retro"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "测试记忆-开工"
+    folder: "测试记忆-开工"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "测试记忆-影响面"
+    folder: "测试记忆-影响面"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "测试记忆-存档"
+    folder: "测试记忆-存档"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "测试记忆-体检"
+    folder: "测试记忆-体检"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "测试记忆-建库"
+    folder: "测试记忆-建库"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "项目机器人协作与故障闭环"
+    folder: "project-bot-collab"
+    version: "v3.13"
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "项目机器人统一接入检查"
+    folder: "项目机器人统一接入检查"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "白话对话"
+    folder: "白话对话"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "skill-variants"
+    folder: "skill-variants"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "skills-setup"
+    folder: "skills-setup"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "test-account"
+    folder: "test-account"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "test-session"
+    folder: "test-session"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "ui-auto-coordinator"
+    folder: "ui-auto-coordinator"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "ui-interaction-kit"
+    folder: "ui-interaction-kit"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "webapp-testing"
+    folder: "webapp-testing"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "what-is-testing"
+    folder: "what-is-testing"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "write-bug-report"
+    folder: "write-bug-report"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "write-charter"
+    folder: "write-charter"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "write-repro-pack"
+    folder: "write-repro-pack"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+  - stable_name: "write-test-report"
+    folder: "write-test-report"
+    version: ""
+    accounts:
+      A: {slug: ""}
+      B: {slug: ""}
+routines:
+  - note: 已入库的只有总控例程。其他机器人例程：待各机器人自报。

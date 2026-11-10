@@ -46,9 +46,12 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：脱敏、去重、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
+  export_grokbot_roster.py  只读导出技能、职责模板和例程原文；真实 id 写到仓库外
 grokbot/                  bots 角色设定 + skills 共用技能备份；业务记忆点仍在各项目 Notion
-  bots/                   四个 Grok Bot 的角色设定和「Cursor专家升级」技能（粘贴到 Grok Bot 中使用）
+  bots/                   现网花名册模板（稳定名）和早期四个角色草稿
   skills/                 Grok 共用技能的脱敏备份（SKILL.md）
+  routines/               总控例程原文；其他机器人例程待自报
+  mapping/                id 映射示例（空账号槽）。真实映射不入库
 .cursor/skills/           Cursor 代理技能：api-automation-pytest、api-case-debugger
 .github/workflows/regression.yml  CI 回归
 run.py                    统一执行入口

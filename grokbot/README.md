@@ -13,9 +13,24 @@
 
 ## 目录
 
-- `bots/`：四个角色 + Cursor专家升级技能原文（粘贴/对照用）
-- `skills/`：Grok 共用技能的脱敏备份（`SKILL.md`）。以机器人侧 UpdateSkill 为准时，这里做可恢复副本。
+- `bots/`：2026-11-10 现网花名册（32 个，文件名即稳定名）。早期四个角色草稿（`0-` 到 `4-`）仍留着，现网职责以花名册文件为准。模板只含名字、标题、描述，以及 settings 里的 `notify_on_agent_updates`。描述里的机器人 id、技能 id 写成 `{{bot:稳定名}}`、`{{skill:稳定名}}`。
+- `skills/`：现网 51 个用户技能。`project-bot-collab` 是「项目机器人协作与故障闭环」v3.13。原来以数字 slug 命名的技能，目录改成稳定名。
+- `routines/`：总控 4 条例程原文。其他机器人的例程待各机器人自报。
+- `mapping/id-map.example.yaml`：名字到空账号槽的样子。真实 id 映射不进 Git，由导出脚本写到仓库外。
 - 不设 `memory/` 流水库：项目记忆点继续写 Notion。
+
+重新导出（在云电脑上，只读来源）：
+
+```bash
+python3 tools/export_grokbot_roster.py \
+  --agents /home/box/agent-data/agents \
+  --workflows /home/box/agent-data/workflows \
+  --routines /path/to/routine-markdown \
+  --dest /workspace/qa/repo/grokbot \
+  --id-map /workspace/qa/private/id-map.yaml
+```
+
+`--id-map` 必须在 Git 工作区之外。例程原文若只在服务端、磁盘上没有目录，可以不传 `--routines`，脚本不会覆盖已入库的例程。
 
 ## 使用
 

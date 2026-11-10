@@ -12,6 +12,9 @@ __pycache__/
 .env.*
 !.env.example
 
+# 双号真实 id 映射只放 Drive，禁止入库
+grokbot/mapping/id-map.yaml
+
 # 报告和日志：保留目录里的 .gitkeep，生成的内容不提交
 reports/*
 !reports/.gitkeep

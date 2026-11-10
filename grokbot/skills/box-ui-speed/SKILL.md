@@ -15,7 +15,7 @@ description: >-
 
 ## 执行方交接（2026-11-09 纠正）
 
-原「UI自动化协调」（id: 7f9ec681-8410-4441-9d55-95df8a2e4cad）已改名为「自动化踩坑知识库」。取消「探路交给 UI自动化协调」。该 id 不再做 UI 探路、不写/改 Playwright 脚本与选择器、不日常连跑。
+原「UI自动化协调」（id: {{bot:自动化踩坑知识库 · 跨项目自动化问题与方案汇总}}）已改名为「自动化踩坑知识库」。取消「探路交给 UI自动化协调」。该 id 不再做 UI 探路、不写/改 Playwright 脚本与选择器、不日常连跑。
 
 UI 探路与写脚本：由各项目执行方自己或既有授权方式处理（Playwright MCP、[playwright-cli](sand-workflow:playwright-cli)、[agent-browser](sand-workflow:agent-browser)、box-ui-speed、必要时 Cursor 协助）。
 
