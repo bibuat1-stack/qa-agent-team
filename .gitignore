@@ -22,6 +22,9 @@ logs/*
 allure-results/
 allure-report/
 
+# Bot 云电脑运行目录。正式位置是 /workspace/qa/runs；在仓库里试跑 run_cloud.sh 时也会生成。
+runs/
+
 # Playwright 输出（pytest-playwright 默认写到 test-results/）
 test-results/
 playwright-report/

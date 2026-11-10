@@ -45,9 +45,11 @@ reports/                  报告输出（Allure 结果、HTML、JUnit、Playwrig
 logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：脱敏、去重、每日额度、生成 brief.md
-  bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
+  bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库。工具链未变时跳过 pip 和浏览器下载，并清理过期运行目录和残留 Chromium
+  run_cloud.sh            云电脑回归入口：按内存限并发，失败不重跑，UI 不录视频，结果写入 runs/<时间>/summary.json
+  cloud_efficiency.py     并发规划、JUnit 摘要和脱敏
 grokbot/                  bots 角色设定 + skills 共用技能备份；业务记忆点仍在各项目 Notion
-  bots/                   四个 Grok Bot 的角色设定和「Cursor专家升级」技能（粘贴到 Grok Bot 中使用）
+  bots/                   四个 Grok Bot 的角色设定、「Cursor专家升级」技能，以及云电脑协作提示词
   skills/                 Grok 共用技能的脱敏备份（SKILL.md）
 .cursor/skills/           Cursor 代理技能：api-automation-pytest、api-case-debugger
 .github/workflows/regression.yml  CI 回归
@@ -82,7 +84,18 @@ python -m playwright install chromium
 Copy-Item .env.example .env   # 按需填写，.env 不提交
 ```
 
-Linux 上用 `source .venv/bin/activate` 激活虚拟环境，用 `python -m playwright install --with-deps chromium` 连同系统依赖一起安装浏览器。Bot 云电脑用 `bash tools/bootstrap_bot_computer.sh https://github.com/bibuat1-stack/qa-agent-team` 完成这些步骤，虚拟环境在 `~/.venvs/qa`。
+Linux 上用 `source .venv/bin/activate` 激活虚拟环境，用 `python -m playwright install --with-deps chromium` 连同系统依赖一起安装浏览器。Bot 云电脑用 `bash tools/bootstrap_bot_computer.sh https://github.com/bibuat1-stack/qa-agent-team` 完成这些步骤，虚拟环境在 `~/.venvs/qa`。同一条命令可以重复执行：依赖和 Chromium 已经就绪时不会重新下载。
+
+### Bot 云电脑
+
+```bash
+bash tools/bootstrap_bot_computer.sh https://github.com/bibuat1-stack/qa-agent-team
+bash tools/run_cloud.sh --suite api -m smoke
+bash tools/run_cloud.sh --suite ui -m smoke
+bash tools/run_cloud.sh --reruns 0 -- tests/api/example_posts/test_posts.py::TestPosts::test_get_post_detail
+```
+
+`run_cloud.sh` 会先走 bootstrap 的快速路径，再按可用内存决定 pytest-xdist 进程数（接口最多 4，UI 最多 2）。可用内存低于 800MB 时不启动浏览器，并在 summary 里写成未跑。失败默认不重跑，留给失败分诊员对单条用例重跑一次。UI 只在失败时保留截图和 trace，不录视频，HTML 不内嵌静态资源。结果目录是 `/workspace/qa/runs/<YYYYMMDD-HHMMSS>/`（Asia/Taipei），回复时贴 `summary.txt`，不要把日志全文贴进聊天。本地和 CI 不带 `--cloud` 时，`run.py` 仍然默认重跑 2 次并生成自包含 HTML。
 
 ### 用 run.py
 

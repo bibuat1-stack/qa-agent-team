@@ -100,3 +100,4 @@ UI 探路与写脚本：由各项目执行方自己或既有授权方式处理�
 3. 同时只跑一个 computerUse。
 4. 站点有 `site-playbooks-*` 时先加载。
 5. 电脑异常先 `box-doctor`，再考虑 [Update Bot's Computer](grokbot://app/v1/settings?id=update-computer)。
+6. 云电脑上的正式回归用 `bash tools/run_cloud.sh`，不要在回归进行时再开 playwright-cli、agent-browser 或 computerUse。三条探路通道和回归脚本仍然只选一个。
