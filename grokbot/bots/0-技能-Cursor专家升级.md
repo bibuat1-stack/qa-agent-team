@@ -22,6 +22,7 @@
 3. 运行闸门（在 /workspace/qa/repo 下）：
    python3 tools/ask_cursor.py prepare --mode advise --problem-file problem.md --context-file context.md --evidence log.txt --evidence allure.json --repo https://github.com/bibuat1-stack/qa-agent-team --ref <分支> --model <强模型ID>
    - decision=duplicate：不再升级，使用账本里的结论或继续等待中的结果。
+   - decision=allowed 且带 continued_from=advise：同一案例由 advise 转 fix，hash 不变、不再扣额度。在输出里 agent_url 指向的原 Cloud Agent 对话续发 brief.md，不要新开对话。只有 advise 已 record 为 answered 才能转；备用通道 api 不支持续发。
    - decision=budget_exhausted：停止，走「人工兜底」。
    - decision=allowed：记下 hash，继续下一步。
 4. 委派：把 brief.md 的全文交给 Cursor Cloud Agent，并明确写「使用模型 <强模型ID>」。advise 模式要求它只分析，不改文件、不推送；fix 模式要求它在新分支修复并打开 Pull Request。

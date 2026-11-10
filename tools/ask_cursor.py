@@ -3,6 +3,8 @@
 
 prepare  Redact evidence, dedupe by failure signature, enforce the daily budget,
          and write brief.md for the Bot to hand to a Cursor Cloud Agent.
+         The mode is not part of the dedupe key: an answered advise case can be
+         continued once as fix under the same hash, without a second budget charge.
 record   Store the outcome of an escalation in the ledger.
 api      Optional fallback: send the brief through the Cloud Agents REST API.
          Prints the request only, unless --send is given and CURSOR_API_KEY is set.
@@ -76,8 +78,8 @@ def failure_signature(problem: str, evidence: list[str]) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def problem_hash(mode: str, repo: str, signature: str) -> str:
-    return hashlib.sha256("\n".join([mode, repo.lower().rstrip("/"), signature]).encode()).hexdigest()[:16]
+def problem_hash(repo: str, signature: str) -> str:
+    return hashlib.sha256("\n".join([repo.lower().rstrip("/"), signature]).encode()).hexdigest()[:16]
 
 
 def agent_id_for(key: str, day: str) -> str:
@@ -153,29 +155,38 @@ def cmd_prepare(args: argparse.Namespace) -> int:
     if not evidence:
         return emit({"decision": "refused", "reason": "至少附一份证据文件 --evidence"}, 2)
 
-    key = problem_hash(args.mode, args.repo or "", failure_signature(problem, [body for _, body in evidence]))
+    key = problem_hash(args.repo or "", failure_signature(problem, [body for _, body in evidence]))
     now = dt.datetime.now(TZ)
     day = now.date().isoformat()
     root = Path(args.root)
+    continued_agent_url = None
 
     with Ledger(root) as ledger:
         item = ledger["items"].get(key)
         if item and now - dt.datetime.fromisoformat(item["created_at"]) < dt.timedelta(hours=DEDUPE_HOURS):
-            return emit({"decision": "duplicate", "hash": key, **item}, 3)
-        used = int(ledger["days"].get(day, 0))
-        if used >= args.budget:
-            return emit({"decision": "budget_exhausted", "hash": key, "budget": args.budget, "day": day}, 4)
-        ledger["days"][day] = used + 1
-        ledger["items"][key] = {
-            "created_at": now.isoformat(timespec="seconds"),
-            "mode": args.mode,
-            "repo": args.repo or "",
-            "status": "pending",
-            "agent_url": "",
-            "pr_url": "",
-            "confidence": None,
-            "summary": "",
-        }
+            if not (args.mode == "fix" and item.get("mode") == "advise" and item.get("status") == "answered"):
+                return emit({"decision": "duplicate", "hash": key, **item}, 3)
+            # Same case moving from diagnosis to repair: keep the hash, the agent and the budget charge.
+            continued_agent_url = item.get("agent_url", "")
+            day = item["created_at"][:10]
+            used = int(ledger["days"].get(now.date().isoformat(), 0))
+            item.update({"mode": "fix", "status": "pending", "continued_from": "advise"})
+        else:
+            used = int(ledger["days"].get(day, 0))
+            if used >= args.budget:
+                return emit({"decision": "budget_exhausted", "hash": key, "budget": args.budget, "day": day}, 4)
+            used += 1
+            ledger["days"][day] = used
+            ledger["items"][key] = {
+                "created_at": now.isoformat(timespec="seconds"),
+                "mode": args.mode,
+                "repo": args.repo or "",
+                "status": "pending",
+                "agent_url": "",
+                "pr_url": "",
+                "confidence": None,
+                "summary": "",
+            }
 
     folder = root / key
     folder.mkdir(parents=True, exist_ok=True)
@@ -193,17 +204,24 @@ def cmd_prepare(args: argparse.Namespace) -> int:
     if args.repo:
         request["repos"] = [{"url": args.repo, **({"startingRef": args.ref} if args.ref else {})}]
     (folder / "request.json").write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
-    return emit(
-        {
-            "decision": "allowed",
-            "hash": key,
-            "budget_left": args.budget - used - 1,
-            "brief_path": str(folder / "brief.md"),
-            "request_path": str(folder / "request.json"),
-            "model": args.model or "(Cloud Agent 默认模型)",
-            "next": "把 brief.md 全文交给 Cursor Cloud Agent，并写明使用的模型；结束后运行 record。",
-        }
-    )
+    result = {
+        "decision": "allowed",
+        "hash": key,
+        "budget_left": max(0, args.budget - used),
+        "brief_path": str(folder / "brief.md"),
+        "request_path": str(folder / "request.json"),
+        "model": args.model or "(Cloud Agent 默认模型)",
+        "next": "把 brief.md 全文交给 Cursor Cloud Agent，并写明使用的模型；结束后运行 record。",
+    }
+    if continued_agent_url is not None:
+        result.update(
+            {
+                "continued_from": "advise",
+                "agent_url": continued_agent_url,
+                "next": "同一案例由 advise 转 fix，未再扣额度。在原 Cloud Agent 对话里续发 brief.md，不要新开对话；结束后运行 record。",
+            }
+        )
+    return emit(result)
 
 
 def cmd_record(args: argparse.Namespace) -> int:
@@ -259,6 +277,11 @@ def cmd_api(args: argparse.Namespace) -> int:
     request = json.loads((folder / "request.json").read_text(encoding="utf-8"))
     if not args.send:
         return emit({"dry_run": True, "POST": f"{API}/v1/agents", "body": request})
+    ledger_path = Path(args.root) / "ledger.json"
+    items = json.loads(ledger_path.read_text(encoding="utf-8")).get("items", {}) if ledger_path.exists() else {}
+    if items.get(args.hash, {}).get("continued_from"):
+        # POST would hit the existing agent (409) and return its old advise run instead of starting the fix.
+        return emit({"error": "该案例由 advise 转 fix，备用通道不能续发；请在原 Cloud Agent 对话里续发 brief.md"}, 5)
     key = os.environ.get("CURSOR_API_KEY", "")
     if not key:
         return emit({"error": "没有 CURSOR_API_KEY，改用内置 Cloud Agent 委派或人工兜底"}, 5)

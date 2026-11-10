@@ -126,7 +126,7 @@ pytest tests/ui --headed --slowmo 500
 
 Grok Bot 只通过 `tools/ask_cursor.py` 升级，完整流程见 `grokbot/bots/0-技能-Cursor专家升级.md`：
 
-1. `prepare`：脱敏证据，按失败特征去重（24 小时内同一问题不重复升级），扣减每日额度（默认 3 次），在 `/workspace/qa/escalations/<hash>/` 下生成 `brief.md` 和 `request.json`。
+1. `prepare`：脱敏证据，按失败特征去重（24 小时内同一问题不重复升级；去重不区分模式，advise 已有结论后可在同一 hash、同一 Cloud Agent 下转一次 fix，不再扣额度），扣减每日额度（默认 3 次），在 `/workspace/qa/escalations/<hash>/` 下生成 `brief.md` 和 `request.json`。
 2. Bot 把 `brief.md` 全文交给 Cursor Cloud Agent。
 3. `record`：把结果（Cloud Agent 链接、PR 链接、confidence、一句话结论）写回账本。
 
