@@ -16,6 +16,7 @@
 ## 目录
 
 - `HANDOFF.md`：接手说明。仓库放什么、不放什么、两条 Cursor 通道、nova 暂停。
+- `MEMORY-EXPORT.md`：新 Grok Bot 接手时读这份备份，里面是已存储的指令、身份、职业、项目和偏好。
 - `bots/roster.md`：在用与暂停角色。实际项目机器人已经不是早期四个模板角色。
 - `bots/`：早期四份模板保留，只作对照，不删除。另有 Cursor专家升级技能原文。
 - `skills/`：Grok 共用技能的脱敏备份（`SKILL.md`）。以机器人侧 UpdateSkill 为准时，这里做可恢复副本。工作台规范在 `skills/project-bot-collab/CURSOR-WORKBENCH.md`，不拿旧 `SKILL.md` 覆盖现网技能。
