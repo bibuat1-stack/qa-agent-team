@@ -23,8 +23,9 @@
 - 凭证
 - 密码、token、密钥
 - 测号密码
-- 谷歌表链接
-- 记忆
+- 凭证表链接
+- 记忆正文
+- Drive 备份包和 nova 备份
 - 连接器登录态
 
 工作台的对话地址和对话 id 可以进 Git，只写在 `grokbot/workbench-map.md`。2026-11-12 用户原话：「谁说不能进的，git那保存这些又没关系」。此前写过对话地址、对话 id 不进 Git，以这句为准。
@@ -48,7 +49,7 @@
 
 升级走常驻 Ask、Plan、Debug、Multitask，再加上 `tools/ask_cursor.py`。一事一案，一个 Agent，一个 PR。工作台不替代升级。
 
-映射正本在 `grokbot/workbench-map.md`。对话地址和对话 id 写在这份正本里。打开映射先读这个文件。Google Drive 不再是打开映射的前提。交付文件仍可以用 Google Drive。
+映射正本在 `grokbot/workbench-map.md`。当前账号的常驻行和旧账号历史、派单记录都在这个文件。对话地址和对话 id 写在这里。当前账号对话列为空。旧账号行保留为停用或暂停，旧稳定 id 不要当成当前号。打开映射先读这个文件。Google Drive 不再是打开映射的前提。交付文件仍可以用 Google Drive。
 
 细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
