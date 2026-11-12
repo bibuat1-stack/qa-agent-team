@@ -6,30 +6,33 @@
 
 ## 仓库放什么
 
-本仓库放四类东西：
+本仓库放这些：
 
 - 角色说明：`grokbot/bots/`。在用角色以 `grokbot/bots/roster.md` 为准。
 - 共用技能备份：`grokbot/skills/`。
 - 自动化框架：用例、页面、配置和执行入口。写法见根目录 `AGENTS.md`。
 - 协作规范：本文件、`grokbot/README.md`、`grokbot/skills/project-bot-collab/`。
+- 工作台映射正本：`grokbot/workbench-map.md`。常驻行、需求分析行和派单记录都在这里。
 
 业务知识在各项目 Notion。业务知识不在 Git。
 
 ## 不放什么
 
-下面这些不进 Git，也不写进技能正文：
+下面这些不进 Git，也不写进技能正文或映射正本：
 
 - 凭证
+- 密码、token、密钥
 - 测号密码
+- 谷歌表链接
 - 记忆
 - 连接器登录态
-- Cursor 对话链接
-- 工作台表的 id 或 URL
+
+工作台的对话地址和对话 id 可以进 Git，只写在 `grokbot/workbench-map.md`。2026-11-12 用户原话：「谁说不能进的，git那保存这些又没关系」。此前写过对话地址、对话 id 不进 Git，以这句为准。
 
 ## 新 Bot 接手步骤
 
 1. 克隆本仓库。
-2. 按 `grokbot/skills/` 导入共用技能。同目录的 `CURSOR-WORKBENCH.md` 是工作台规范，用来补现网技能，不用它覆盖现网 `SKILL.md`。
+2. 按 `grokbot/skills/` 导入共用技能。`grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md` 是工作台规范，用来补现网技能，不用它覆盖现网 `SKILL.md`。映射正本读 `grokbot/workbench-map.md`。
 3. 按 `grokbot/bots/roster.md` 建角色。`bots/` 里早期四份模板保留作对照。实际项目机器人以花名册为准。
 4. 在云电脑运行 `tools/bootstrap_bot_computer.sh`，重建工具链。
 5. 重新授权 Notion、Google、GitHub 等连接器。连接器登录态不会随仓库过来。
@@ -41,13 +44,13 @@
 
 ## Cursor 两条通道
 
-工作台给思考、方案、代码草稿。默认模型是 Grok 4.7。每个在用项目号一条对话。同类活续聊。不提前建满。
+工作台给思考、方案、代码草稿。默认模型是 Grok 4.7。常驻是每个在用项目号一条对话。需求分析是一条需求一条对话。同类活续聊。不提前建满。
 
 升级走常驻 Ask、Plan、Debug、Multitask，再加上 `tools/ask_cursor.py`。一事一案，一个 Agent，一个 PR。工作台不替代升级。
 
-机器人与对话的映射只在 Google Drive 表「QA机器人Cursor工作台」。Git 和技能正文不写对话 id 或 URL。表链接由用户或总控单独给。
+映射正本在 `grokbot/workbench-map.md`。对话地址和对话 id 写在这份正本里。打开映射先读这个文件。Google Drive 不再是打开映射的前提。交付文件仍可以用 Google Drive。
 
-细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
+细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
 ## nova
 

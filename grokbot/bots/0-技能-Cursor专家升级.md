@@ -28,7 +28,7 @@
 
 工作台不替代常驻 Ask、Plan、Debug、Multitask。不按机器人再复制这四个席位。
 
-机器人与对话的映射只在 Google Drive 表「QA机器人Cursor工作台」。本技能不写对话 id 或 URL。表链接由用户或总控单独给。工作台正文见仓库 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
+机器人与对话的映射正本在仓库 `grokbot/workbench-map.md`。对话地址和对话 id 写在该文件，可以进 Git。打开映射先读这个文件。Google Drive 不再是打开映射的前提。本技能不抄具体对话地址，也不写密码、token、密钥、测号、谷歌表链接。工作台正文见仓库 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
 
 ## 步骤
 1. 整理证据（最多 8 份，每份存成文件）：完整的 pytest/Playwright 命令和退出码；堆栈；最后 200 行日志；失败用例的 Allure 结果（status、statusDetails）；接口失败时的请求和响应；你两次尝试的 diff；分支和 commit。

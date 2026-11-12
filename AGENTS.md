@@ -46,10 +46,11 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：脱敏、去重、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
-grokbot/                  接手说明、角色花名册、共用技能备份；业务记忆点仍在各项目 Notion
+grokbot/                  接手说明、角色花名册、工作台映射正本、共用技能备份；业务记忆点仍在各项目 Notion
   HANDOFF.md              新 Bot 接手说明。先读这份
+  workbench-map.md        工作台映射正本。对话地址和对话 id 写在这里
   bots/                   早期四份模板（保留）、roster.md 花名册、「Cursor专家升级」技能
-  skills/                 Grok 共用技能的脱敏备份（SKILL.md）。工作台规范见 project-bot-collab/CURSOR-WORKBENCH.md
+  skills/                 Grok 共用技能的脱敏备份（SKILL.md）。工作台规范见 project-bot-collab/CURSOR-WORKBENCH.md，填空步骤见 workbench-fill/SKILL.md
 .cursor/skills/           Cursor 代理技能：api-automation-pytest、api-case-debugger
 .github/workflows/regression.yml  CI 回归
 run.py                    统一执行入口
@@ -127,7 +128,7 @@ pytest tests/ui --headed --slowmo 500
 
 Grok Bot 只通过 `tools/ask_cursor.py` 升级，完整流程见 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
-项目机器人的思考、方案、代码草稿走工作台。机器人与对话的映射只存在 Google Drive 表「QA机器人Cursor工作台」。本仓库不写对话 id 或 URL。共享框架要开 PR，仍走 `tools/ask_cursor.py`。接手步骤见 `grokbot/HANDOFF.md`，工作台细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
+项目机器人的思考、方案、代码草稿走工作台。常驻是每个在用项目号一条对话；需求分析是一条需求一条对话。映射正本在 `grokbot/workbench-map.md`，对话地址和对话 id 写在该文件。打开映射先读这个文件。Google Drive 不再是打开映射的前提。交付文件仍可以用 Google Drive。共享框架要开 PR，仍走 `tools/ask_cursor.py`。接手步骤见 `grokbot/HANDOFF.md`，工作台细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
 
 1. `prepare`：脱敏证据，按失败特征去重（24 小时内同一问题不重复升级），扣减每日额度（默认 3 次），在 `/workspace/qa/escalations/<hash>/` 下生成 `brief.md` 和 `request.json`。
 2. Bot 把 `brief.md` 全文交给 Cursor Cloud Agent。
