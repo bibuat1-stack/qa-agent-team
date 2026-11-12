@@ -12,7 +12,7 @@
 - 共用技能备份：`grokbot/skills/`。
 - 自动化框架：用例、页面、配置和执行入口。写法见根目录 `AGENTS.md`。
 - 协作规范：本文件、`grokbot/README.md`、`grokbot/skills/project-bot-collab/`。
-- 工作台映射正本：`grokbot/workbench-map.md`。常驻行、需求分析行和派单记录都在这里。
+- 工作台映射正本：`grokbot/workbench-map.md`。同一张表用「账号」列区分，账号名暂定「2026-11-12本账号」和「换号前账号」。另有账号对照和派单记录。
 
 业务知识在各项目 Notion。业务知识不在 Git。
 
@@ -49,7 +49,7 @@
 
 升级走常驻 Ask、Plan、Debug、Multitask，再加上 `tools/ask_cursor.py`。一事一案，一个 Agent，一个 PR。工作台不替代升级。
 
-映射正本在 `grokbot/workbench-map.md`。当前账号的常驻行和旧账号历史、派单记录都在这个文件。对话地址和对话 id 写在这里。当前账号对话列为空。旧账号行保留为停用或暂停，旧稳定 id 不要当成当前号。打开映射先读这个文件。Google Drive 不再是打开映射的前提。交付文件仍可以用 Google Drive。
+映射正本在 `grokbot/workbench-map.md`。谷歌表「QA机器人Cursor工作台」只是同步副本。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查表和续聊先看「账号」：「2026-11-12本账号」与「换号前账号」写在同一张表，不得互相续聊。换号前账号的稳定 id 不要当成当前号。当前账号对话列为空。
 
 细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
