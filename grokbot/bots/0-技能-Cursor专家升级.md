@@ -28,7 +28,7 @@
 
 工作台不替代常驻 Ask、Plan、Debug、Multitask。不按机器人再复制这四个席位。
 
-机器人与对话的映射正本在仓库 `grokbot/workbench-map.md`。查映射先看「账号」列。对话地址和对话 id 写在该文件，可以进 Git。谷歌表只是同步副本。谷歌硬盘只保存全量压缩包；日常先同步到 Git，再备份压缩包到硬盘。本技能不抄具体对话地址，也不写密码、token、密钥、测号、凭证表链接。工作台正文见仓库 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
+机器人与对话的映射正本在仓库 `grokbot/workbench-map.md`。查映射先打开对应账号那一页，现在在用的是「工作台-Faker」。对话地址和对话 id 写在该文件，可以进 Git。谷歌表只是同步副本。谷歌硬盘只保存全量压缩包；日常先同步到 Git，再备份压缩包到硬盘。本技能不抄具体对话地址，也不写密码、token、密钥、测号、凭证表链接。工作台正文见仓库 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
 
 ## 步骤
 1. 整理证据（最多 8 份，每份存成文件）：完整的 pytest/Playwright 命令和退出码；堆栈；最后 200 行日志；失败用例的 Allure 结果（status、statusDetails）；接口失败时的请求和响应；你两次尝试的 diff；分支和 commit。

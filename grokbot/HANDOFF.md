@@ -12,7 +12,7 @@
 - 共用技能备份：`grokbot/skills/`。
 - 自动化框架：用例、页面、配置和执行入口。写法见根目录 `AGENTS.md`。
 - 协作规范：本文件、`grokbot/README.md`、`grokbot/skills/project-bot-collab/`。
-- 工作台映射正本：`grokbot/workbench-map.md`。同一张表用「账号」列区分，账号为 Faker 和 sacks。另有账号对照和派单记录。
+- 工作台映射正本：`grokbot/workbench-map.md`。按 Grok Bot 账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`，另有账号对照。现在查、写用 `工作台-Faker`。
 
 业务知识在各项目 Notion。业务知识不在 Git。
 
@@ -49,7 +49,7 @@
 
 升级走常驻 Ask、Plan、Debug、Multitask，再加上 `tools/ask_cursor.py`。一事一案，一个 Agent，一个 PR。工作台不替代升级。
 
-映射正本在 `grokbot/workbench-map.md`。谷歌表「QA机器人Cursor工作台」只是同步副本。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查表和续聊先看「账号」：「Faker」与「sacks」写在同一张表，不得互相续聊。sacks 的稳定 id 不要当成当前号。当前账号对话列为空。
+映射正本在 `grokbot/workbench-map.md`。谷歌表「QA机器人Cursor工作台」只是同步副本，页也按账号分开。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查表先打开对应账号那一页。现在在用的是 `工作台-Faker` 和 `派单记录-Faker`。`工作台-sacks` 只作历史对照，不得续聊，那些稳定 id 不要当成当前号。Faker 的对话列为空。
 
 细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
