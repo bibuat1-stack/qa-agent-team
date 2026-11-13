@@ -13,6 +13,8 @@
 - 自动化框架：用例、页面、配置和执行入口。写法见根目录 `AGENTS.md`。
 - 协作规范：本文件、`grokbot/README.md`、`grokbot/skills/project-bot-collab/`。
 
+云电脑共用脚本的备份在 `tools/cloud-computer/`（`qa-ready.sh`、`bin/box_health.py`、`bin/html_report.py`）。云电脑上仍运行 `/workspace/qa/qa-ready.sh` 和 `/workspace/qa/bin/` 里的同名文件。方案正文不进 Git。登录态、租约和测号也不进 Git。
+
 业务知识在各项目 Notion。业务知识不在 Git。
 
 ## 不放什么
@@ -61,7 +63,7 @@
 1. 克隆本仓库。
 2. 按 `grokbot/skills/` 导入共用技能。同目录的 `CURSOR-WORKBENCH.md` 是工作台规范，用来补现网技能，不用它覆盖现网 `SKILL.md`。
 3. 按 `grokbot/bots/roster.md` 建角色。`bots/` 里早期四份模板保留作对照。实际项目机器人以花名册为准。
-4. 在云电脑运行 `tools/bootstrap_bot_computer.sh`，重建工具链。
+4. 在云电脑第一次重建工具链时运行 `tools/bootstrap_bot_computer.sh`。日常开工不要跑它，也不要跑 apt；运行 `/workspace/qa/qa-ready.sh`。这份脚本的仓库备份在 `tools/cloud-computer/qa-ready.sh`，体检和批次 HTML 报告的备份在同目录 `bin/`。体检低于 2048 MiB 时只提示，退出码仍是 0。
 5. 重新授权 Notion、Google、GitHub 等连接器。连接器登录态不会随仓库过来。
 6. 测试账号不在仓库。去哪找、先看哪一份、怎么同步，见本文件「测试账号在哪」。不要把密码抄进 Git。
 
