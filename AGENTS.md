@@ -13,7 +13,7 @@
 
 协作方式：
 
-- Grok Bot 在 Debian 云电脑上把本仓库克隆到 `/workspace/qa/repo`，用 `tools/bootstrap_bot_computer.sh` 重建工具链。
+- Grok Bot 在 Debian 云电脑上把本仓库克隆到 `/workspace/qa/repo`，用 `tools/bootstrap_bot_computer.sh` 重建工具链。日常开工跑 `/workspace/qa/qa-ready.sh`（备份在 `tools/cloud-computer/`），不跑 apt。
 - Bot 自己解决不了的问题，通过 `tools/ask_cursor.py` 升级给 Cursor Cloud Agent。Cloud Agent 负责诊断，或者在新分支上修改代码并打开 PR，由人审核合并。
 - GitHub Actions 的 `regression` 工作流负责回归，有失败时把摘要发给 Grok Bot。
 
@@ -46,6 +46,7 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：脱敏、去重、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
+  cloud-computer/         云电脑共用脚本备份：qa-ready.sh、bin/box_health.py、bin/html_report.py。拷到 /workspace/qa/ 使用；不跑 apt，CI 不执行
 grokbot/                  接手说明、角色花名册、工作台映射正本、共用技能备份；业务记忆点仍在各项目 Notion
   HANDOFF.md              新 Bot 接手说明。先读这份
   workbench-map.md        工作台映射正本。按账号分页，现在在用工作台-Faker

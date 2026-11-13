@@ -1,6 +1,6 @@
 # QA机器人 Cursor 工作台映射
 
-- 更新：2026-11-12，时区 Asia/Taipei
+- 更新：2026-11-13，时区 Asia/Taipei
 - 正本：仓库 qa-agent-team 的 `grokbot/workbench-map.md`
 - 同步表：谷歌表「QA机器人Cursor工作台」https://docs.google.com/spreadsheets/d/1CzIHDJmmsII4Ib-7uFgWqMEmQ2LihTzjpr3YFq_eH6s/edit ；按 Grok Bot 账号分页，当前在用「工作台-Faker」「派单记录-Faker」，换号前对照「工作台-sacks」「派单记录-sacks」
 - 谷歌硬盘：只保存全量压缩包；日常先同步到 Git，再备份压缩包到硬盘。硬盘不是映射正本
@@ -50,7 +50,7 @@
 | GO | GO测试执行 | 7a72aff0-067a-4508-961a-15fa475bdad2 | 常驻 |  |  |  |  | Grok 4.7 | 空 |  |  |  |  |
 | GO | GO知识库总控 | 12a74bef-0baf-473c-84b8-807f672d2898 | 常驻 |  |  |  |  | Grok 4.7 | 空 |  |  |  |  |
 | GO | GO电子 | 5f5b7650-5e1b-455d-929c-9bcafa457933 | 壳号，不建工作台 |  |  |  |  | Grok 4.7 | 空 |  |  |  |  |
-| 跨项目 | 自动化踩坑知识库 | 92cb1c6e-3506-416f-ac5d-6932f8cbb1a6 | 常驻 |  |  |  |  | Grok 4.7 | 空 |  |  |  |  |
+| 跨项目 | 自动化踩坑知识库 | 92cb1c6e-3506-416f-ac5d-6932f8cbb1a6 | 常驻 |  |  | https://cursor.com/agents/bc-e52b316e-582e-5631-ab58-49cbabf3ccd2 | bc-e52b316e-582e-5631-ab58-49cbabf3ccd2 | Grok 4.7 | 在用 | 2026-11-13 | 2026-11-13 |  |  |
 
 ## 工作台-sacks
 
@@ -90,6 +90,7 @@
 | 2026-11-12 | 跨项目 | 总控 | 新建 | 丰富前端加解密分析法技能草稿 | https://cursor.com/agents/bc-5ed3da1f-4e2c-57cf-bf51-194d82b2770e | 已写入共用技能 skill-1794489729491；仅出草稿，未开 PR |
 | 2026-11-12 | 跨项目 | 总控 | 新建 | 约定需求分析多对话与回收关闭 | https://cursor.com/agents/bc-032b5709-d8f9-5d91-a808-3f18c4e10231 | 已写入工作台填空 skill-1794479688422；仅出约定，未开 PR |
 | 2026-11-12 | 跨项目 | 总控 | 新建 | 工作台映射改放入仓库 | https://cursor.com/agents/bc-a1887bbd-11f0-5304-9b28-d3ecbbc0e9cf | 已开 PR #13，未合并 |
+| 2026-11-13 | 跨项目 | 自动化踩坑知识库 | 新建 | 开设常驻工作台用于分析难点 | https://cursor.com/agents/bc-e52b316e-582e-5631-ab58-49cbabf3ccd2 |  |
 
 ## 派单记录-sacks
 
@@ -100,5 +101,5 @@
 
 ## 备注
 
-- Faker 账号对话 URL / 对话 id 仍为空，状态为「空」，因为还没有第一次真要开工作台的活。
+- 工作台-Faker 里，自动化踩坑知识库常驻已是「在用」。其余 Faker 行的对话 URL 和对话 id 仍为空，状态仍为「空」。不要给那些行编造对话。
 - 谷歌硬盘「QA机器人备份」只保存全量压缩包，不作为映射正本。备份里的凭证类文件、测号、记忆正文不进本仓库。

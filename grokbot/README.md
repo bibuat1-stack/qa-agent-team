@@ -11,11 +11,11 @@
 | **Notion（各项目知识库）** | 业务上下文、记忆点、知识点、缺陷、进度。机器人开工主读这里。 |
 | **本仓库 GitHub** | 角色设定、共用技能副本、稳定协作规范、工作台映射正本（`workbench-map.md`，含对话地址和对话 id）。可版本恢复，给 Cloud Agent 与新 Bot 读。 |
 
-凭证、token、Cookie、测号密码：**两边都不写**。
+凭证、token、Cookie、测号密码：**两边都不写**。测号去哪找，见 [`HANDOFF.md`](HANDOFF.md) 的「测试账号在哪」。本仓库不放密码，也不放表链接和页面链接。
 
 ## 目录
 
-- `HANDOFF.md`：接手说明。仓库放什么、不放什么、两条 Cursor 通道、nova 暂停。
+- `HANDOFF.md`：接手说明。仓库放什么、不放什么、测试账号去哪找、云电脑日常开工跑 `qa-ready.sh`、两条 Cursor 通道、nova 暂停。
 - `workbench-map.md`：工作台映射正本。按账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`。现在查、写用 `工作台-Faker`。谷歌表只是同步副本。
 - `MEMORY-EXPORT.md`：新 Grok Bot 接手时读这份备份，里面是已存储的指令、身份、职业、项目和偏好。
 - `bots/roster.md`：在用与暂停角色。实际项目机器人已经不是早期四个模板角色。
