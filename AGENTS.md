@@ -15,7 +15,7 @@
 
 协作方式：
 
-- Grok Bot 在 Debian 云电脑上把本仓库克隆到 `/workspace/qa/repo`，用 `tools/bootstrap_bot_computer.sh` 重建工具链。
+- Grok Bot 在 Debian 云电脑上把本仓库克隆到 `/workspace/qa/repo`，用 `tools/bootstrap_bot_computer.sh` 重建工具链。日常开工跑 `/workspace/qa/qa-ready.sh`（备份在 `tools/cloud-computer/`），不跑 apt。
 - Bot 自己解决不了的问题，通过 `tools/ask_cursor.py` 升级给 Cursor Cloud Agent。Cloud Agent 负责诊断，或者在新分支上修改代码并打开 PR，由人审核合并。
 - GitHub Actions 的 `regression` 工作流负责回归，有失败时把摘要发给 Grok Bot。
 
@@ -48,7 +48,12 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：同一案例持续推进（prepare / followup / record / status / api），脱敏、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
-grokbot/bots/             四个核心角色的设定，以及所有机器人共用的「Cursor专家升级」技能（粘贴到每个会升级的 Grok Bot）
+  cloud-computer/         云电脑共用脚本备份：qa-ready.sh、bin/box_health.py、bin/html_report.py。拷到 /workspace/qa/ 使用；不跑 apt，CI 不执行
+grokbot/                  接手说明、角色花名册、工作台映射正本、共用技能备份；业务记忆点仍在各项目 Notion
+  HANDOFF.md              新 Bot 接手说明。先读这份
+  workbench-map.md        工作台映射正本。按账号分页，现在在用工作台-Faker
+  bots/                   早期四份模板（保留）、roster.md 花名册、「Cursor专家升级」技能（粘贴到每个会升级的 Grok Bot）
+  skills/                 Grok 共用技能的脱敏备份（SKILL.md）。工作台规范见 project-bot-collab/CURSOR-WORKBENCH.md，填空步骤见 workbench-fill/SKILL.md
 .cursor/skills/           Cursor 代理技能：api-automation-pytest、api-case-debugger
 .github/workflows/regression.yml  CI 回归
 run.py                    统一执行入口
@@ -126,6 +131,8 @@ pytest tests/ui --headed --slowmo 500
 
 所有 Grok Bot 只通过 `tools/ask_cursor.py` 升级，并用 `--owner` 标明自己是谁。同一个问题始终是同一个案例（同一个 hash、同一个 Cloud Agent、同一个 Pull Request），不再按 24 小时另开。完整流程见 `grokbot/bots/0-技能-Cursor专家升级.md`；没有单独角色文件的机器人按该文件里的通用规则执行。合并后必须把 `grokbot/bots/*.md` 重新粘贴到每一个使用该技能的机器人。
 
+项目机器人的思考、方案、代码草稿走工作台。常驻是每个在用项目号一条对话；需求分析是一条需求一条对话。映射正本在 `grokbot/workbench-map.md`，按 Grok Bot 账号分页。查表先打开对应账号那一页，现在在用的是 `工作台-Faker`。谷歌表只是同步副本。谷歌硬盘只保存全量压缩包；日常先同步到 Git，再备份压缩包到硬盘。共享框架要开 PR，仍走 `tools/ask_cursor.py`。接手步骤见 `grokbot/HANDOFF.md`，工作台细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。
+
 1. `prepare`：脱敏证据，按失败特征（含 pytest 节点 id）计算 hash。新案例扣减每日额度（默认 3 次，只计新案例和 `followup --reopen`），在 `/workspace/qa/escalations/<hash>/` 下生成 `brief.md`、`problem.md`、`case.md` 和 `request.json`（`kind` 为 `create`）。hash 已存在时不另开：进行中返回 duplicate（退出码 3），已有结论返回 continue（退出码 0），不重复扣额度。
 2. `followup`：验证失败或需要补充时，在同一 hash 上写 `followup.md`，由 Bot 粘贴进原来的 Cloud Agent 卡片。默认每个案例最多追问 3 次（`ASK_CURSOR_FOLLOWUPS`），不占每日新案例额度。次数用尽后案例阻塞；只有人明确要求时才 `followup --reopen`（占用 1 次每日额度，不换 hash）。
 3. Bot 把 `brief.md`（第 1 轮）或 `followup.md`（后续轮）全文交给同一个 Cursor Cloud Agent。追问使用同一个模型、同一张卡片。
@@ -155,7 +162,8 @@ CI 失败通知的 webhook payload 含 `next` 字段：先在仓库里运行 `st
 - 小而专注：一个 PR 只解决一个问题。
 - 提交信息使用 Conventional Commits：`feat`、`fix`、`test`、`refactor`、`docs`、`chore`、`ci`，例如 `fix(api): 修正帖子列表的字段路径`。
 - 不改与任务无关的文件。除非任务明确要求，不改测试数据（`data/`）和 CI 配置（`.github/`）。
-- 在新分支上提交并打开 PR，不直接推送 main，也不自己合并。
+- 在新分支上提交并打开 PR，不直接推送 main。用例、框架、CI 和其他业务改动不自己合并，等人审核。
+- `grokbot/skills/` 的技能备份更新频繁。一次改动只包含 `grokbot/skills/`，以及为这次备份同步的 `grokbot/README.md` 或这里的目录说明时，CI 通过后由 Cloud Agent 自行合并该 PR。夹带其他目录的改动仍等人审核。
 - PR 描述写清楚改了什么、根因是什么、怎么验证的（命令和结果）。改动共享框架代码（`conftest.py`、`common/`、`config/`、`pages/base_page.py`）时，说明影响范围。
 - 不提交 `.env`、令牌、密码、报告或日志。
 
