@@ -13,6 +13,7 @@
 - 自动化框架：用例、页面、配置和执行入口。写法见根目录 `AGENTS.md`。
 - 协作规范：本文件、`grokbot/README.md`、`grokbot/skills/project-bot-collab/`。
 - 工作台映射正本：`grokbot/workbench-map.md`。按 Grok Bot 账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`，另有账号对照。现在查、写用 `工作台-Faker`。
+- 备份分工：`grokbot/BACKUP.md`。Git 与 Google Drive「QA机器人备份」各放什么。
 
 云电脑共用脚本的备份在 `tools/cloud-computer/`（`qa-ready.sh`、`bin/box_health.py`、`bin/html_report.py`）。云电脑上仍运行 `/workspace/qa/qa-ready.sh` 和 `/workspace/qa/bin/` 里的同名文件。方案正文不进 Git。登录态、租约和测号也不进 Git。
 
