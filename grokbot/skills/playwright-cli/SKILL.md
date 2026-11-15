@@ -1,8 +1,8 @@
 ---
 name: playwright-cli
 description: >-
-  用 Microsoft playwright-cli 做网页探路、抓 a11y 快照、点控、录制、抓网络与 console、生成定位器时使用。与
-  Playwright MCP 同类，适合 Shell 驱动；可重复回归仍以仓库脚本为准。
+  用 Microsoft playwright-cli 做网页探路、抓 a11y 快照、点控、录制、抓网络与
+  console、生成定位器时使用。网页探路默认用本技能，选型见 box-ui-speed。可重复回归仍以仓库脚本为准。不把三种工具写成并列可选。
 ---
 # playwright-cli（机器人优化版）
 
@@ -12,7 +12,7 @@ Microsoft 官方浏览器 CLI（当前环境已装 `@playwright/cli`）。独立
 
 1. 连接器 / API
 2. 仓库 Playwright 脚本回归
-3. 网页探路：Playwright MCP **或** playwright-cli **或** [agent-browser](sand-workflow:agent-browser)（三选一，不混抢同一测号）
+3. 网页探路：见 [box-ui-speed](sand-workflow:box-ui-speed)，默认本技能。不要把 Playwright MCP、agent-browser 写成并列可选。不混抢同一测号。
 4. 桌面 / canvas → computerUse
 
 同时加载 [box-ui-speed](sand-workflow:box-ui-speed)。

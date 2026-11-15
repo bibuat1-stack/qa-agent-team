@@ -1,8 +1,9 @@
 ---
 name: automation-regression
 description: >-
-  写或跑 UI/API 自动化回归、核对需求与实现是否一致时使用。约定 Playwright MCP/脚本做 UI、Postman/OpenAPI
-  做契约、用例挂知识点。预期必须有依据。探路与写脚本自理，可重复路径禁止桌面点屏，踩坑脱敏汇总交「自动化踩坑知识库」。
+  写或跑 UI/API 自动化回归、核对需求与实现是否一致时使用。约定仓库 Playwright 脚本做 UI、Postman/OpenAPI
+  做契约、用例挂知识点。预期必须有依据。探路选型见 box-ui-speed，默认 playwright-cli。可重复路径禁止桌面点屏。踩坑卡片字段见
+  ui-auto-coordinator。
 ---
 # 自动化回归（UI / API / 需求一致性）
 
@@ -13,26 +14,27 @@ description: >-
 - 要写或改 UI/API 自动化
 - 要跑回归并出可追溯结果
 - 要核对「需求/知识点」与实现或用例是否一致
-- 要用 Playwright MCP / playwright-cli / agent-browser 探路并自动落脚本
+- 要按 box-ui-speed 探路并自动落脚本
 
 ## 执行方交接（2026-11-09 纠正）
 
 原「UI自动化协调」（id: 7f9ec681-8410-4441-9d55-95df8a2e4cad）已改名为「自动化踩坑知识库」。取消「探路交给 UI自动化协调」。该 id 不再做 UI 探路、不写/改 Playwright 脚本与选择器、不日常连跑。
 
-UI 探路与写脚本：由各项目执行方自己或既有授权方式处理（Playwright MCP、[playwright-cli](sand-workflow:playwright-cli)、[agent-browser](sand-workflow:agent-browser)、[box-ui-speed](sand-workflow:box-ui-speed)、必要时 Cursor 协助）。
+UI 探路与写脚本：由各项目执行方自己处理。选型见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 [playwright-cli](sand-workflow:playwright-cli)。必要时 Cursor 协助。
 
 自动化踩坑沉淀：遇到问题并解决后，把脱敏汇总交给「自动化踩坑知识库」（同 id）：项目名、现象、已尝试步骤、最终解法或仍未解原因、脱敏证据路径。禁止凭证。该库只沉淀可复用知识，不替执行方排障到底，也不接连跑。
 
-框架级新设计仍先 Cursor 审核。T8T 新框架/试点按既有用户决定暂不推进。
+框架级新设计仍先 Cursor 审核。T8T 自动化框架要推进，不要写成暂不推进。
 
 ## 默认技术选型
 
-1. UI 探路：Playwright MCP **或** [playwright-cli](sand-workflow:playwright-cli) **或** [agent-browser](sand-workflow:agent-browser)（三选一，不混抢同一测号）。优先 a11y snapshot + ref
+1. UI 探路：见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 [playwright-cli](sand-workflow:playwright-cli)。优先 a11y snapshot + ref。不混抢同一测号。
 2. UI 回归：仓库 Playwright 脚本（优先 getByRole / getByTestId，开 trace）
 3. API：Playwright `APIRequestContext` 或 Postman，与 UI 共享登录态与报告
 4. 契约：OpenAPI/Collection。需要时加载 `api-testing`、`application-testing`、`ci-integration`、`collection-schema-v3`，也可参考 [api-contract-testing](sand-workflow:api-contract-testing)（若已装）
 5. 本地 Web/dev server：可加载 [webapp-testing](sand-workflow:webapp-testing)
 6. 不做生产真实资金写操作。凭证走 Vault，不进聊天、Notion、记忆或仓库明文
+7. 默认直连，不经 `127.0.0.1:8791` 代理。路线表见 [box-ui-speed](sand-workflow:box-ui-speed)。不要给独立浏览器设置该代理。只有必须用保险库填表、要用户接管登录，或同一地址直连已证实失败时，才开平台自带桌面浏览器。
 
 ## Modern Web Guidance（仅探路写脚本）
 
@@ -42,11 +44,23 @@ UI 探路与写脚本：由各项目执行方自己或既有授权方式处理�
 
 ## 自动识别 → 自动跑 → 自动写脚本
 
-1. 探路用 Playwright MCP / playwright-cli / agent-browser 读 snapshot，用 ref 跑通主路径
+1. 探路按 [box-ui-speed](sand-workflow:box-ui-speed) 读 snapshot，用 ref 跑通主路径
 2. 首次跑通后**当场**生成/更新 Playwright 脚本到本项目约定目录，步骤注释挂知识点编号。写脚本时可加载 `modern-web-guidance`
 3. 选择器写入本项目选择器库。第二次起只跑脚本
 4. 脚本失败再探路修复，修完立刻更新脚本
 5. 用户要回归或路径已稳定时，没有脚本算未完成
+
+## 手测转脚本短路径（v1，2026-11-10，用户批准）
+
+与上段时机不一致时以本段为准：首次跑通可以当场落脚本，最迟第二次必须落。
+
+1. 第一次手测留痕，放本项目自己的目录
+2. 同一路径第二次落成本项目脚本，断言挂已确认 K 编号。没有已确认编号的断言标待确认，不当通过依据
+3. 第三次起只跑脚本，不再手点
+4. 脚本目录按项目隔离：/workspace/ui-auto/<项目>/。M3 与 M3+支付 选择器分开放，不共用一份选择器库。AntPay 库建成前不写 AntPay 脚本
+5. 失败先按现象查「自动化踩坑知识库」（id: 7f9ec681-8410-4441-9d55-95df8a2e4cad）。命中就沿用旧解法，回报写卡片名。没命中再探路
+6. 结案补卡片交踩坑库：字段见 [ui-auto-coordinator](sand-workflow:ui-auto-coordinator)（问题、改法、结果、仍未证明什么），带 Cursor 案例号或 PR 链接。卡片不写脚本正文，不写凭证
+7. 收工时记两数给日报周报：命中旧卡次数、新建卡次数。取不到写未统计
 
 ## 路径提速（防卡顿）
 
@@ -74,7 +88,7 @@ UI 探路与写脚本：由各项目执行方自己或既有授权方式处理�
 
 1. 锁契约
 2. API 冒烟
-3. 网页探路主路径并落脚本（三选一工具）
+3. 网页探路主路径并落脚本（见 box-ui-speed）
 4. 脚本回归 + 回挂知识点。缺陷候选先确认再存档
 
 ## 失败读报告
