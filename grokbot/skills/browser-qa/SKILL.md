@@ -1,6 +1,9 @@
 ---
 name: browser-qa
-description: 对已部署的前台/后台做发布后冒烟与交互走查时使用：console 与网络、关键路径点击、多断点截图、无障碍抽检，给出有证据的结论。默认只读，不碰资金写操作。
+description: >-
+  对已部署的前台/后台做发布后冒烟与交互走查时使用：console
+  与网络、关键路径点击、多断点截图、无障碍抽检，给出有证据的结论。默认只读，不碰资金写操作。结论只用通过、失败、阻塞、未测、未验证，不另造放行词。探路见
+  box-ui-speed。
 ---
 # Browser QA（机器人优化版）
 
@@ -16,7 +19,7 @@ description: 对已部署的前台/后台做发布后冒烟与交互走查时使
 
 ## 工具选型
 
-网页探路三选一（不混抢同一测号）：Playwright MCP、[playwright-cli](sand-workflow:playwright-cli)、[agent-browser](sand-workflow:agent-browser)。桌面/canvas 才用 computerUse。
+探路见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 [playwright-cli](sand-workflow:playwright-cli)。桌面/canvas 才用 computerUse。不混抢同一测号。
 
 ## 安全边界
 
@@ -56,7 +59,7 @@ description: 对已部署的前台/后台做发布后冒烟与交互走查时使
 短句中文，先结论。模板：
 
 ```text
-结论：通过 / 有问题可带病 / 不建议放行 / 证据不足
+结论：通过 / 失败 / 阻塞 / 未测 / 未验证
 冒烟：console、网络、首屏证据路径
 交互：逐条 ✓/✗/未测 + 依据
 视觉：有无基线、问题点、截图路径

@@ -1,6 +1,8 @@
 ---
 name: ui-interaction-kit
-description: 走查、UI自动化或读页面控件时使用。跨项目通用UI交互约定：优先无障碍树/DOM，像素兜底，统一按钮弹层表格状态判定，并可挂项目特有热区与样例。
+description: >-
+  走查、UI自动化或读页面控件时使用。跨项目通用UI交互约定：先读结构树再配页面截图，按 ref
+  点不猜像素；统一按钮弹层表格状态判定，并可挂项目特有热区与样例。探路选型见 box-ui-speed，不在本技能并列三种工具。
 ---
 # 通用 UI 交互资料包
 
@@ -18,10 +20,20 @@ description: 走查、UI自动化或读页面控件时使用。跨项目通用UI
 1. 无障碍树 / 角色与可访问名（button、textbox、dialog、listbox、table）
 2. 稳定 DOM：`data-testid`、语义角色、稳定 `id`/`name`（避开易变 class 与纯坐标）
 3. 结构化状态：disabled、aria-busy、aria-expanded、hidden、loading
-4. 像素 / 模板 / OCR 仅作兜底，且必须有「可点/不可点」对照样例
+4. 像素 / 模板 / OCR 仅作兜底，且必须有「可点/不可点」对照样例。普通页不要靠猜像素点控件。画布、游戏画面、图表等读不到按钮结构时，改走 [canvas-ui-testing](sand-workflow:canvas-ui-testing)
 5. 有接口时并行挂监听，区分前端展示问题与接口问题，流量可落成后续 API 素材
 
-取树工具：Playwright MCP `browser_snapshot`、[playwright-cli](sand-workflow:playwright-cli) `snapshot`、[agent-browser](sand-workflow:agent-browser) `snapshot -i`。选型与落脚本见 [box-ui-speed](sand-workflow:box-ui-speed)。
+取树工具的选型见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 [playwright-cli](sand-workflow:playwright-cli) `snapshot`。命令还可用 Playwright MCP `browser_snapshot`，备用 [agent-browser](sand-workflow:agent-browser) `snapshot -i`。
+
+### 先读结构树再看图（可执行步骤）
+
+这就是本技能里「标号截图 / SoM」的官方做法，不要另装 SoM 框架。
+
+1. 先读结构树：按 [box-ui-speed](sand-workflow:box-ui-speed) 选用工具，默认 [playwright-cli](sand-workflow:playwright-cli) `snapshot`（即 aria snapshot）。大页用 `find <文案>` 搜节点，不要每次整树硬扫。
+2. 需要编号和位置时：`snapshot --boxes`（MCP 为 `boxes: true`）。树里每个节点会带 ref 和 `[box=x,y,width,height]`（视口相对、CSS 像素）。点的时候仍用 ref / role / testId，不报也不猜像素坐标。
+3. 必须看画面时，再配一张 Playwright 页面截图（无头即可）。可用 `highlight eN` 把目标描出来对照，不要把标记留在被测页上。
+4. 跑通路径后，当场用 `generate-locator eN`（或 `recording-stop`）落 `getByRole` / `getByTestId` 脚本，不要手抄 CSS。
+5. 画布页没有可标的 DOM 控件，改走 [canvas-ui-testing](sand-workflow:canvas-ui-testing)。普通页不要开 Playwright MCP vision 按坐标点。
 
 ## 通用控件约定
 

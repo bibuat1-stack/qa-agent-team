@@ -1,6 +1,8 @@
 ---
 name: diagnosing-bugs
-description: 硬缺陷或性能回退需要系统诊断时使用。先建可复现的红绿反馈环，再最小化、再提假设，禁止空想猜因。凭证与日志先脱敏。
+description: >-
+  硬缺陷或性能回退需要系统诊断时使用。先建可复现的红绿反馈环，再最小化、再提假设，禁止空想猜因。定位到原因就停，不由测试机器人改产品代码。凭证与日志先脱敏。探路见
+  box-ui-speed。
 ---
 # 诊断缺陷（机器人优化版）
 
@@ -22,7 +24,7 @@ description: 硬缺陷或性能回退需要系统诊断时使用。先建可复�
 1. 失败用例（单测 / 集成 / e2e）
 2. curl / HTTP 脚本打运行中服务
 3. CLI + 夹具，对比 stdout
-4. Playwright / playwright-cli / agent-browser 驱动 UI，断言 DOM/console/网络
+4. 网页探路见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 playwright-cli，断言 DOM/console/网络
 5. 回放已捕获的请求/trace
 6. 最小 harness
 7. 属性/模糊（偶发错误输出）
@@ -48,17 +50,17 @@ description: 硬缺陷或性能回退需要系统诊断时使用。先建可复�
 
 一次只改一个变量。优先调试器/REPL，其次边界日志。日志加唯一前缀如 `[DEBUG-a4f2]` 方便收尾清理。性能问题先量再改。
 
-## 阶段 5：修复 + 回归
+## 阶段 5：定位后停手
 
-有正确缝才写回归测试：先红后绿，再跑未最小化的原环。没有正确缝本身就是发现，记下来。
+定位到原因就停。修复交给开发，或按 [Cursor专家升级](sand-workflow:cursor) 升级。测试机器人不改产品代码。e2e 失败只修测试，见 [e2e-debugger](sand-workflow:e2e-debugger)。
 
 ## 阶段 6：收尾
 
-- 原环已绿
-- 回归通过或已记无缝
+- 原因已定位，或已记阻塞
 - `[DEBUG-...]` 已清
 - 临时原型已删或标明
 - 正确假设写进结论
+- 修复不由本技能实施
 
 ## 输出
 

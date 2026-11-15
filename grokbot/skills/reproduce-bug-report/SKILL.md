@@ -1,18 +1,32 @@
 ---
 name: reproduce-bug-report
-description: 根据缺陷单、截图或口述复现 UI/交互问题时使用。用本项目授权工具抓证据（录屏或截图），回报确认/部分确认/未复现/阻塞，不猜未证实环境。
+description: >-
+  根据缺陷单、截图或口述复现
+  UI/交互问题时使用。描述含糊、偶发或依赖环境时，先写成最小可证步骤，再抓证据。用本项目授权工具抓录屏或截图，回报确认、部分确认、未复现或阻塞，不猜未证实环境。探路见
+  box-ui-speed。不边复现边改产品代码。
 ---
 # 复现缺陷报告（机器人优化版）
 
 面向 UI / 渲染 / 交互类缺陷。纯后端、构建、依赖问题除非用户明确要求视觉复现，否则不用本技能。
 
+## 先写最小可证步骤
+
+报告不全、偶发、或环境相关时，先证明最小可观察失败，再谈诊断或修复。建简报期间不改产品代码。
+
+1. **记现象**：确切错误或错误输出、时间、路由或命令、已知最小输入。日志脱敏。二手描述标未证实。
+2. **记环境**：能查到的才写。不猜凭证与生产配置。
+3. **拆期望与实际**：两句可观察陈述，不把猜因写进去。
+4. **缩小**：按报告路径走，再逐项去掉无关数据与步骤。保留仍失败的最小步骤。失败消失则恢复最后去掉的条件并记下。
+5. **可重复**：安全时至少跑两次。偶发则写频率与窗口，不谎称必现。
+6. **停在修复前**：简报是这一步的交付物，不边复现边改产品代码。
+
+简报用下面这几栏：目标与提交；环境；期望；实际；最小复现步骤或命令；重复（必现 / 约 N/M）；证据路径；未证实；下一步（一条诊断动作）。
+
 ## 与现有技能关系
 
-- 有票要拆复现步骤：可先 `repro-from-ticket` / `repro-from-screenshot`
-- 网页优先 Playwright MCP / [playwright-cli](sand-workflow:playwright-cli) / [agent-browser](sand-workflow:agent-browser)
-- 桌面/canvas 才 computerUse
+- 探路见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 playwright-cli。桌面/canvas 才用 computerUse。不把三种工具写成并列可选。
 - 证据脱敏见 [evidence-hygiene](sand-workflow:evidence-hygiene)
-- 硬缺陷系统诊断见 [diagnosing-bugs](sand-workflow:diagnosing-bugs)
+- 硬缺陷系统诊断见 [diagnosing-bugs](sand-workflow:diagnosing-bugs)。诊断前先完成上面的最小可证步骤。
 
 ## 主流程
 
