@@ -48,7 +48,7 @@ logs/                     日志输出，不提交
 tools/
   ask_cursor.py           升级闸门：同一案例持续推进（prepare / followup / record / status / api），脱敏、每日额度、生成 brief.md
   bootstrap_bot_computer.sh  在 Bot 云电脑上克隆或更新仓库，安装依赖和 Chromium
-  cloud-computer/         云电脑共用脚本备份：qa-ready.sh、bin/box_health.py、bin/html_report.py。拷到 /workspace/qa/ 使用；不跑 apt，CI 不执行
+  cloud-computer/         云电脑共用脚本备份：qa-ready.sh、bin/box_health.py、bin/html_report.py、bin/browser_defaults.py、bin/open_direct_headed.py、bin/README-browser.md。拷到 /workspace/qa/ 使用；不跑 apt，CI 不执行。UI 回归默认无头，有头默认 1920×1200；不要改平台桌面 Chrome / 8791
 grokbot/                  接手说明、角色花名册、工作台映射正本、共用技能备份；业务记忆点仍在各项目 Notion
   HANDOFF.md              新 Bot 接手说明。先读这份
   workbench-map.md        工作台映射正本。按账号分页，现在在用工作台-Faker

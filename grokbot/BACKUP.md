@@ -52,9 +52,15 @@
 
 记忆是各账号自己的工作记录。要看对方记了什么，打开对方子目录里最新的包，对着看，用户点头后再改自己这边。禁止两边定时互相同步记忆，也不要做自动解除冲突。
 
-## 恢复顺序
+## 用户说「同步」
 
-1. 拉 Git 仓库，按 `HANDOFF.md` 装技能、按花名册建机器人。
-2. 连上 Notion、Google Drive、GitHub。
-3. 需要本账号的记忆和例程时，打开硬盘里该账号子目录的最新压缩包，按包内 `RESTORE.md` 贴回。
-4. 跑 `qa-ready.sh`。
+同一账号日常说「同步」：把尚未回写仓库的共用改动开 PR，总控不自己合并。
+
+换到新 Grok Bot 账号或新机器后，用户对总控说「同步」时，按固定顺序做：
+
+1. 拉取公开仓库 https://github.com/bibuat1-stack/qa-agent-team ，按 `grokbot/HANDOFF.md` 安装技能，按花名册建机器人。换号后机器人 id 可能变化，不要把旧 id 当成当前号。
+2. 重新连接 Notion、Google Drive、GitHub 等连接器。连接器授权、云电脑登录态、Cookie 不能从备份恢复，必须由用户重新点授权、重新登录。
+3. 打开 Google Drive「QA机器人备份」下当前账号子目录（现在是 Faker/）的最新周备份包，按包内 `RESTORE.md` 贴回记忆和例程。不要和 sacks 记忆自动对倒。
+4. 运行 `/workspace/qa/qa-ready.sh`，不要默认跑 bootstrap 或 apt。
+5. 测号不在包里、也不在 Git。只指出位置：云电脑 `/workspace/qa/secrets/qa-test-accounts.md`、Windows `C:\Users\青鸟\Documents\qa-test-accounts.md`、Notion「测试账号」页、保险库同名登录、谷歌表「各项目测试账号与凭证」。聊天不写密码。
+6. 不要恢复完整聊天记录、`store.db`、附件原文。业务记忆点以各项目 Notion 知识库为准；账号记忆以周备份 `memory/` 为准。Cursor 工作台对话正文仍在用户的 Cursor 账号里，地址以 `grokbot/workbench-map.md` 为准。

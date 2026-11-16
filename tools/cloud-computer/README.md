@@ -9,6 +9,9 @@
 | `qa-ready.sh` | `/workspace/qa/qa-ready.sh` |
 | `bin/box_health.py` | `/workspace/qa/bin/box_health.py` |
 | `bin/html_report.py` | `/workspace/qa/bin/html_report.py` |
+| `bin/browser_defaults.py` | `/workspace/qa/bin/browser_defaults.py` |
+| `bin/open_direct_headed.py` | `/workspace/qa/bin/open_direct_headed.py` |
+| `bin/README-browser.md` | `/workspace/qa/bin/README-browser.md` |
 
 拷贝示例（在仓库根目录执行，不跑 apt，也不调用 `bootstrap_bot_computer.sh`）：
 
@@ -17,7 +20,12 @@ mkdir -p /workspace/qa/bin
 install -m 0755 tools/cloud-computer/qa-ready.sh /workspace/qa/qa-ready.sh
 install -m 0755 tools/cloud-computer/bin/box_health.py /workspace/qa/bin/box_health.py
 install -m 0755 tools/cloud-computer/bin/html_report.py /workspace/qa/bin/html_report.py
+install -m 0755 tools/cloud-computer/bin/browser_defaults.py /workspace/qa/bin/browser_defaults.py
+install -m 0755 tools/cloud-computer/bin/open_direct_headed.py /workspace/qa/bin/open_direct_headed.py
+install -m 0644 tools/cloud-computer/bin/README-browser.md /workspace/qa/bin/README-browser.md
 ```
+
+`bin/browser_defaults.py`、`bin/open_direct_headed.py` 和 `bin/README-browser.md` 是浏览器默认脚本的仓库副本。现网仍运行 `/workspace/qa/bin/` 里的同名文件。UI 回归默认无头；有头窗口默认 1920×1200。不要改平台桌面 Chrome，也不要改 8791。不要把测号或代理密码写进这些文件。用法见 `bin/README-browser.md`。
 
 `qa-ready.sh` 缺 pytest 才安装仓库依赖，缺 Chromium 只执行 `playwright install chromium`（不加 `--with-deps`）。另外检查 pyotp、playwright-cli 和 agent-browser；后两个装到 `~/.local`，不需要 root。`/workspace/qa/bin` 会放进当前进程的 PATH，并在 `~/.bashrc` 里留一行。安装失败只把最后 30 行写入 `/workspace/qa/runs/bootstrap-error.log`，然后继续。
 

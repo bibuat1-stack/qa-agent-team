@@ -15,7 +15,7 @@
 - 工作台映射正本：`grokbot/workbench-map.md`。按 Grok Bot 账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`，另有账号对照。现在查、写用 `工作台-Faker`。
 - 备份分工：`grokbot/BACKUP.md`。Git 与 Google Drive「QA机器人备份」各放什么。
 
-云电脑共用脚本的备份在 `tools/cloud-computer/`（`qa-ready.sh`、`bin/box_health.py`、`bin/html_report.py`）。云电脑上仍运行 `/workspace/qa/qa-ready.sh` 和 `/workspace/qa/bin/` 里的同名文件。方案正文不进 Git。登录态、租约和测号也不进 Git。
+云电脑共用脚本的备份在 `tools/cloud-computer/`（`qa-ready.sh`、`bin/box_health.py`、`bin/html_report.py`，以及浏览器默认脚本 `bin/browser_defaults.py`、`bin/open_direct_headed.py`、`bin/README-browser.md`）。云电脑上仍运行 `/workspace/qa/qa-ready.sh` 和 `/workspace/qa/bin/` 里的同名文件。UI 回归默认无头；有头窗口默认 1920×1200。不要改平台桌面 Chrome，也不要改 8791。方案正文不进 Git。登录态、租约、测号和代理密码也不进 Git。
 
 业务知识在各项目 Notion。业务知识不在 Git。
 
@@ -68,9 +68,22 @@
 1. 克隆本仓库。
 2. 按 `grokbot/skills/` 导入共用技能。`grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md` 是工作台规范，用来补现网技能，不用它覆盖现网 `SKILL.md`。映射正本读 `grokbot/workbench-map.md`。
 3. 按 `grokbot/bots/roster.md` 建角色。`bots/` 里早期四份模板保留作对照。实际项目机器人以花名册为准。
-4. 在云电脑第一次重建工具链时运行 `tools/bootstrap_bot_computer.sh`。日常开工不要跑它，也不要跑 apt；运行 `/workspace/qa/qa-ready.sh`。这份脚本的仓库备份在 `tools/cloud-computer/qa-ready.sh`，体检和批次 HTML 报告的备份在同目录 `bin/`。体检低于 2048 MiB 时只提示，退出码仍是 0。
+4. 在云电脑第一次重建工具链时运行 `tools/bootstrap_bot_computer.sh`。日常开工不要跑它，也不要跑 apt；运行 `/workspace/qa/qa-ready.sh`。用户对总控只说「同步」时，按下一节的固定顺序，不默认跑 bootstrap。这份脚本的仓库备份在 `tools/cloud-computer/qa-ready.sh`，体检、批次 HTML 报告和浏览器默认脚本的备份在同目录 `bin/`。体检低于 2048 MiB 时只提示，退出码仍是 0。
 5. 重新授权 Notion、Google、GitHub 等连接器。连接器登录态不会随仓库过来。
 6. 测试账号不在仓库。去哪找、先看哪一份、怎么同步，见本文件「测试账号在哪」。不要把密码抄进 Git。
+
+## 用户说「同步」
+
+同一账号日常说「同步」：把尚未回写仓库的共用改动开 PR，总控不自己合并。
+
+换到新 Grok Bot 账号或新机器后，用户对总控说「同步」时，按固定顺序做：
+
+1. 拉取公开仓库 https://github.com/bibuat1-stack/qa-agent-team ，按 `grokbot/HANDOFF.md` 安装技能，按花名册建机器人。换号后机器人 id 可能变化，不要把旧 id 当成当前号。
+2. 重新连接 Notion、Google Drive、GitHub 等连接器。连接器授权、云电脑登录态、Cookie 不能从备份恢复，必须由用户重新点授权、重新登录。
+3. 打开 Google Drive「QA机器人备份」下当前账号子目录（现在是 Faker/）的最新周备份包，按包内 `RESTORE.md` 贴回记忆和例程。不要和 sacks 记忆自动对倒。
+4. 运行 `/workspace/qa/qa-ready.sh`，不要默认跑 bootstrap 或 apt。
+5. 测号不在包里、也不在 Git。只指出位置：云电脑 `/workspace/qa/secrets/qa-test-accounts.md`、Windows `C:\Users\青鸟\Documents\qa-test-accounts.md`、Notion「测试账号」页、保险库同名登录、谷歌表「各项目测试账号与凭证」。聊天不写密码。
+6. 不要恢复完整聊天记录、`store.db`、附件原文。业务记忆点以各项目 Notion 知识库为准；账号记忆以周备份 `memory/` 为准。Cursor 工作台对话正文仍在用户的 Cursor 账号里，地址以 `grokbot/workbench-map.md` 为准。
 
 ## Cursor 两条通道
 
@@ -78,7 +91,7 @@
 
 升级走常驻 Ask、Plan、Debug、Multitask，再加上 `tools/ask_cursor.py`。一事一案，一个 Agent，一个 PR。工作台不替代升级。
 
-映射正本在 `grokbot/workbench-map.md`。谷歌表「QA机器人Cursor工作台」只是同步副本，页也按账号分开。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查表先打开对应账号那一页。现在在用的是 `工作台-Faker` 和 `派单记录-Faker`。`工作台-sacks` 只作历史对照，不得续聊，那些稳定 id 不要当成当前号。工作台-Faker 里，自动化踩坑知识库常驻已是「在用」。其余 Faker 行的对话列仍为空。
+映射正本在 `grokbot/workbench-map.md`。谷歌表「QA机器人Cursor工作台」只是同步副本，页也按账号分开。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查表先打开对应账号那一页。现在在用的是 `工作台-Faker` 和 `派单记录-Faker`。`工作台-sacks` 只作历史对照，不得续聊，那些稳定 id 不要当成当前号。工作台-Faker 里，总控（King）常驻、自动化踩坑知识库常驻已是「在用」。T8T需求分析「故事220」和「故事221」需求分析行已是「在用」，未写入该号常驻行。其余 Faker 行的对话 URL 和对话 id 仍为空，状态仍为「空」。不要给那些行编造对话。
 
 细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
@@ -93,6 +106,18 @@ nova 项目暂停。先不建工作台。不派活。
 把 Cursor 结果转给用户时，同样要短。
 
 机器人自己核验 Cursor 结果。不把草稿当测过。不合并 PR。汇报不含凭证。
+
+## 可复制转发文本
+
+2026-11-14 用户原话确认。
+
+给用户准备要转发或复制的内容（尤其是给开发的话术、缺陷单链接）时，不要用短链或 Markdown 链接把地址藏起来。链接和整段话术要各用一条单独消息发出，并用代码围栏包住纯文本和完整原始 URL，使消息右上角出现复制按钮。日常说明仍可用普通链接，这条只约束准备给用户复制转发的文本。
+
+## 专项测试号
+
+2026-11-14 用户确认先按这样定。
+
+正式测试需求只在常驻执行号已在跑另一件要开浏览器或登录的活时，才新开专项测试执行号。需求分析、知识库、提单、主管、走查和日报周报继续用常驻号。分析仍一条需求一条对话，关对话不删分析号。需求上线或用户明确说不测了，先按清单归档并读回，有未关缺陷先不删；通过后由用户在侧边栏删专项执行号，总控不删号，复测交常驻执行号。临时需求和日常回归留在常驻执行号。活着的专项号写入花名册和工作台-Faker，删掉后工作台留停用行。专项号不自建例程。GO 先不开专项号。小程序和 nova 不动。仍共用一台云电脑，抢同一登录或同一后台的活要错开。
 
 ## 测试执行
 
