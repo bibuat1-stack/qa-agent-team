@@ -1,10 +1,9 @@
 ---
 name: playwright-best-practices
 description: >-
-  写或评审 Playwright UI 自动化、选定位策略、用自动等待与 expect 断言、规避 flaky 时使用。
-  与 automation-regression、box-ui-speed、e2e-debugger、webapp-testing、playwright-cli、
-  agent-browser 互补；不替代探路选型与失败分诊。用户说 Playwright 最佳实践、定位器、
-  auto-wait、expect、flaky 时优先加载。
+  写或评审 Playwright UI 自动化、选定位策略、用自动等待与 expect 断言、规避 flaky
+  时使用。写结构回归（toMatchAriaSnapshot）或视觉回归（toHaveScreenshot）时也加载。不替代探路选型（见
+  box-ui-speed）与失败分诊。
 ---
 # Playwright 最佳实践（机器人优化版）
 
@@ -17,6 +16,7 @@ description: >-
 - 用 `expect` 自动等待，去掉硬编码 `waitForTimeout`
 - 评审脚本是否易 flaky
 - 固化探路结果为可复用脚本时，补定位与断言写法
+- 给关键区域做结构回归（`toMatchAriaSnapshot`）或受控像素回归（`toHaveScreenshot`）
 
 ## 不覆盖（交给兄弟技能）
 
@@ -30,12 +30,13 @@ description: >-
 | 独立 Chromium 探路 | [agent-browser](sand-workflow:agent-browser) |
 | HTML report / trace 分诊 | [playwright-report-triage](sand-workflow:playwright-report-triage) |
 | 无障碍审计加深 | [accessibility](sand-workflow:accessibility) |
+| 画布/游戏画面等读不到按钮结构 | [canvas-ui-testing](sand-workflow:canvas-ui-testing) |
 
 ## 工具优先级（与团队一致，勿矛盾）
 
 1. **有 API / 连接器**：接口断言，不点 UI  
 2. **可重复回归**：只跑仓库 Playwright 脚本（开 trace）  
-3. **网页探路**：Playwright MCP **或** playwright-cli **或** agent-browser（三选一，不混抢同一测号）  
+3. **网页探路**：见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 playwright-cli。不把三种工具写成并列可选，不混抢同一测号。  
 4. **computerUse**：仅桌面 / canvas / 网页工具够不到时  
 5. 探路跑通后**当场**落脚本；第二次起回到第 2 条  
 
@@ -85,6 +86,38 @@ await expect(page).toHaveURL(/\/done/);
 
 详情见 `references/assertions-waiting.md`。
 
+## 结构回归与视觉回归
+
+关键区域用 `toMatchAriaSnapshot` 做结构回归，比看图像素稳，也能抓住「登 录」这种名字里的空格。断言落在稳定区域（`dialog`、`main`、导航），不要整页死锁；动态文案用 `/正则/`。
+
+```typescript
+await expect(page.getByRole("dialog", { name: "确认" })).toMatchAriaSnapshot(`
+  - heading "确认" [level=2]
+  - button "确定"
+  - button "取消"
+`);
+```
+
+像素断言用 `toHaveScreenshot`，不能替代功能断言，只覆盖少量关键页和组件：
+
+- 必须带 `animations: 'disabled'`，并对时间、余额、头像等会变的区域 `mask`
+- 基准图必须在同一套 Linux 环境生成和比对（本机 Linux 对 Linux），不要用其他系统的基准来对云电脑
+- 动态页不要硬上整页对比；差异图给 AI 看，不要让 AI 整张图猜「像不像」
+
+```typescript
+await expect(page.getByRole("main")).toHaveScreenshot("checkout-main.png", {
+  animations: "disabled",
+  mask: [page.getByTestId("balance"), page.getByRole("img", { name: "头像" })],
+});
+```
+
+写法详见本机已有指南 `~/.agents/skills/playwright-best-practices/testing-patterns/visual-regression.md`（按需 Read，不要整篇塞进上下文）。更跟上 Playwright 1.64 的按需参考（只读，不替换本技能）：
+
+- `/workspace/qa/ref/testdino-playwright-skill/core/visual-regression.md`
+- `/workspace/qa/ref/testdino-playwright-skill/core/accessibility.md`
+
+画布、游戏画面等读不到结构时，改走 [canvas-ui-testing](sand-workflow:canvas-ui-testing)。
+
 ## 防 Flaky 清单（写/评必过）
 
 1. 不用固定 sleep；等条件不用等时钟  
@@ -110,4 +143,4 @@ await expect(page).toHaveURL(/\/done/);
 
 ## 来源
 
-上游全文：`~/.agents/skills/playwright-best-practices/`（currents-dev，含 core / debugging / testing-patterns 等）。本目录 `references/` 为常用篇符号链接，按需 Read，勿整包塞进上下文。
+上游全文：`~/.agents/skills/playwright-best-practices/`（currents-dev，含 core / debugging / testing-patterns 等）。本目录 `references/` 为常用篇符号链接，按需 Read，勿整包塞进上下文。视觉回归指南见上文绝对路径，尚未链进 `references/`。testdino 参考包只读，路径见上文，不要整包替换本技能。
