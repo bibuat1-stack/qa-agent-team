@@ -16,7 +16,7 @@
 
 ## 目录
 
-- `HANDOFF.md`：接手说明。仓库放什么、不放什么、测试账号去哪找、云电脑日常开工跑 `qa-ready.sh`、两条 Cursor 通道、nova 暂停。
+- `HANDOFF.md`：接手说明。仓库放什么、不放什么、测试账号去哪找、云电脑日常开工跑 `qa-ready.sh`、两条 Cursor 通道、nova 暂停、可复制转发文本、专项测试号。用户说「同步」的固定顺序与 `BACKUP.md` 同一段。
 - `BACKUP.md`：Git 与 Google Drive 备份怎么分。日常先把共用内容同步到 Git；Drive 文件夹「QA机器人备份」只按账号子目录保存周备份压缩包。
 - `workbench-map.md`：工作台映射正本。按账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`。现在查、写用 `工作台-Faker`。谷歌表只是同步副本。
 - `MEMORY-EXPORT.md`：新 Grok Bot 接手时读这份备份，里面是已存储的指令、身份、职业、项目和偏好。
