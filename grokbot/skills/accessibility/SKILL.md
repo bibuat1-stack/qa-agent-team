@@ -1,6 +1,6 @@
 ---
 name: accessibility
-description: 做无障碍审计、WCAG 2.2 核对、键盘/读屏抽检、对比度与焦点问题时使用。用户说 a11y、无障碍、WCAG、键盘导航、读屏、可访问性时优先加载。与 browser-qa 的「无障碍抽检」互补；正式修复与回归仍跟项目授权走。
+description: 做无障碍审计、WCAG 2.2 核对、键盘/读屏抽检、对比度与焦点问题，或用 toMatchAriaSnapshot 做结构快照断言时使用。用户说 a11y、无障碍、WCAG、键盘导航、读屏、可访问性时优先加载。与 browser-qa 的「无障碍抽检」互补；正式修复与回归仍跟项目授权走。
 ---
 # Accessibility（机器人优化版）
 
@@ -11,16 +11,17 @@ description: 做无障碍审计、WCAG 2.2 核对、键盘/读屏抽检、对比
 - 用户要无障碍审计、a11y、WCAG、键盘可达、读屏、对比度、焦点可见
 - [browser-qa](sand-workflow:browser-qa) 抽检发现可疑后要加深核验
 - 写或评审含 axe / ARIA / 表单标签的 Playwright 断言
+- 要把关键区域的无障碍结构钉成回归断言（`toMatchAriaSnapshot`）
 
 ## 工具选型（本环境）
 
 优先已有探路栈，**不要假设已装 Chrome DevTools MCP**：
 
-1. Playwright MCP / [playwright-cli](sand-workflow:playwright-cli) / [agent-browser](sand-workflow:agent-browser)：取 a11y 树、键盘 Tab、截图
+1. Playwright MCP / [playwright-cli](sand-workflow:playwright-cli) / [agent-browser](sand-workflow:agent-browser)：取 a11y 树、键盘 Tab、截图；回归用 `toMatchAriaSnapshot` 钉结构
 2. 有 axe 或 `@axe-core/playwright` 再跑自动化；没有则标「未测自动化 a11y」
 3. 可选：`npx lighthouse <url> --only-categories=accessibility`（公开页或已授权 URL）
 
-桌面/canvas 才用 computerUse。正式可重复路径以仓库脚本为准。
+桌面/canvas 才用 computerUse。正式可重复路径以仓库脚本为准。画布页改走 [canvas-ui-testing](sand-workflow:canvas-ui-testing)。
 
 ## 安全边界
 
@@ -36,6 +37,7 @@ description: 做无障碍审计、WCAG 2.2 核对、键盘/读屏抽检、对比
 3. 键盘走关键路径：Tab 顺序、Enter/Space、有无陷阱、焦点是否被 sticky 挡住
 4. 人工核对：对比度嫌疑、缺 label、图标按钮无名、仅靠颜色表达错误
 5. 修复后（若任务含修）重跑同一审计；只审计则输出问题清单与证据路径
+6. 抽检发现结构不对，或关键区域需要钉住时，用 `expect(locator).toMatchAriaSnapshot(...)` 做结构快照断言。断言落在稳定区域（`dialog`、`main`、导航），不要整页死锁；动态文案用 `/正则/`。这和 [browser-qa](sand-workflow:browser-qa) 的无障碍抽检互补：抽检查出结构问题，再用快照回归钉住。axe 与键盘抽检仍然要做，快照不能代替它们。按需参考（只读）：https://playwright.dev/docs/aria-snapshots ；`/workspace/qa/ref/testdino-playwright-skill/core/accessibility.md`
 
 自动化满分 ≠ WCAG 符合。分数不能代替逐条问题证据。
 
@@ -59,6 +61,7 @@ description: 做无障碍审计、WCAG 2.2 核对、键盘/读屏抽检、对比
 范围：URL + 视口
 自动化：axe/Lighthouse 结果或未测
 键盘/焦点：✓/✗/未测 + 证据
+结构快照：toMatchAriaSnapshot 结果或未测
 严重问题：Critical / Serious 列表（对照源技能 impact）
 证据路径：截图 / 树快照 / 报告
 ```

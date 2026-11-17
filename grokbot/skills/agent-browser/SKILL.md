@@ -1,8 +1,8 @@
 ---
 name: agent-browser
 description: >-
-  在机器人电脑上用 agent-browser CLI 做网页探路、填表、点按钮、截图、抽数据或探索性测试时使用。优先于
-  computerUse，但不能替代接口、Playwright MCP/脚本回归。登录前仍走 sign-in/vault。
+  在机器人电脑上用 agent-browser CLI 做网页探路的备用工具时使用。不能替代接口和仓库脚本回归。选型见 box-ui-speed，默认
+  playwright-cli。登录前仍走 sign-in/vault。不用于把本工具写成探路首选。
 ---
 # agent-browser（机器人优化版）
 
@@ -14,7 +14,7 @@ description: >-
 
 1. 有连接器或 API → 用 MCP/接口，不点页面
 2. 可重复回归 → 只跑 Playwright 脚本或 Playwright MCP
-3. 网页探路 / 一次性走查 / 需要 a11y 快照点控 → **agent-browser**（本技能）
+3. 网页探路见 [box-ui-speed](sand-workflow:box-ui-speed)，默认 playwright-cli。本技能只作备用，不混抢同一测号。
 4. 原生桌面、canvas、必须看机器人桌面浏览器 → computerUse
 5. 禁止用 Shell 去操控机器人电脑自带桌面 Chrome 窗口
 
