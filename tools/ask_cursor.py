@@ -9,8 +9,9 @@ status    List open cases so a rebuilt computer can resume.
 api       Optional fallback: send the case through the Cloud Agents REST API.
           Prints the request only, unless --send is given and CURSOR_API_KEY is set.
 
-The same failure signature stays one case. advise and fix are different cases
-because mode is part of the hash.
+The same failure signature stays one case. Mode is not part of the hash.
+An answered advise case can continue once as fix under the same hash,
+without a second budget charge.
 
 Exit codes: 0 ok, 2 usage error, 3 duplicate / blocked / follow-up cap,
 4 budget exhausted, 5 API error, 6 still running when the wait ended.
@@ -151,8 +152,8 @@ def failure_signature(problem: str, evidence: list[str]) -> str:
     return text
 
 
-def problem_hash(mode: str, repo: str, signature: str) -> str:
-    return hashlib.sha256("\n".join([mode, repo.lower().rstrip("/"), signature]).encode()).hexdigest()[:16]
+def problem_hash(repo: str, signature: str) -> str:
+    return hashlib.sha256("\n".join([repo.lower().rstrip("/"), signature]).encode()).hexdigest()[:16]
 
 
 def agent_id_for(key: str, day: str) -> str:
@@ -527,7 +528,7 @@ def cmd_prepare(args: argparse.Namespace) -> int:
     if not evidence:
         return emit({"decision": "refused", "reason": "至少附一份证据文件 --evidence"}, 2)
 
-    key = problem_hash(args.mode, args.repo or "", failure_signature(problem, [body for _, body in evidence]))
+    key = problem_hash(args.repo or "", failure_signature(problem, [body for _, body in evidence]))
     root = Path(args.root)
     folder = root / key
     cap = followup_cap()
@@ -535,6 +536,59 @@ def cmd_prepare(args: argparse.Namespace) -> int:
 
     with Ledger(root) as ledger:
         item = ledger["items"].get(key)
+        if (
+            item
+            and args.mode == "fix"
+            and (item.get("mode") or "") == "advise"
+            and (item.get("status") or "") == "answered"
+        ):
+            used = int(ledger["days"].get(today(), 0))
+            item["mode"] = "fix"
+            item["status"] = "pending"
+            item["continued_from"] = "advise"
+            item["awaiting_send"] = True
+            item["run_id"] = ""
+            item["updated_at"] = now_iso()
+            item["round"] = int(item.get("round") or 1) + 1
+            if args.repo and not (item.get("repo") or "").strip():
+                item["repo"] = args.repo
+            if args.ref and not (item.get("ref") or "").strip():
+                item["ref"] = args.ref
+            round_n = int(item["round"])
+            why = "同一案例由诊断转为修复。请在原对话里改代码并打开 Pull Request，不要新开 Agent。"
+            text = build_followup(item, key, why, context, evidence, problem, round_n)
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / "followup.md").write_text(text, encoding="utf-8")
+            (folder / f"followup-{round_n}.md").write_text(text, encoding="utf-8")
+            agent_id = recorded_agent_id(item)
+            write_followup_request(folder, text, agent_id)
+            item["next"] = (
+                f"同一案例由 advise 转 fix，未再扣额度。在原 Cloud Agent 对话里续发 {folder / 'followup.md'}，不要新开对话。"
+                f"结束后运行：{command_record(key, 'answered')}"
+            )
+            ledger["items"][key] = item
+            sync_case(folder, key, item, "prepare", "advise 转为 fix，不新开案例")
+            return emit(
+                {
+                    "decision": "allowed",
+                    "hash": key,
+                    "status": "pending",
+                    "mode": "fix",
+                    "continued_from": "advise",
+                    "round": round_n,
+                    "followups": int(item.get("followups") or 0),
+                    "budget_left": max(0, budget - used),
+                    "brief_path": str(folder / "followup.md"),
+                    "followup_path": str(folder / "followup.md"),
+                    "request_path": str(folder / "request.json"),
+                    "case_path": str(folder),
+                    "model": args.model or "(Cloud Agent 默认模型)",
+                    "agent_url": item.get("agent_url") or "",
+                    "pr_url": item.get("pr_url") or "",
+                    "summary": item.get("summary") or "",
+                    "next": item["next"],
+                }
+            )
         if item:
             status = item.get("status") or "pending"
             payload = case_fields(item, key, folder)
@@ -988,6 +1042,24 @@ def cmd_api(args: argparse.Namespace) -> int:
         return emit({"error": "request.json 必须是对象"}, 2)
 
     kind = str(request.get("kind") or "create").lower()
+    ledger_path = root / "ledger.json"
+    continued = ""
+    if ledger_path.exists():
+        try:
+            continued = str(
+                (json.loads(ledger_path.read_text(encoding="utf-8")).get("items") or {}).get(args.hash, {}).get("continued_from")
+                or ""
+            )
+        except json.JSONDecodeError:
+            continued = ""
+    if continued == "advise" and kind == "create":
+        return emit(
+            {
+                "error": "该案例由 advise 转 fix，备用通道不能新开 Agent；请在原 Cloud Agent 对话里续发 followup.md",
+                "hash": args.hash,
+            },
+            5,
+        )
     if kind == "followup":
         agent_id = str(request.get("agentId") or "")
         prompt = request.get("prompt") or {"text": ""}
