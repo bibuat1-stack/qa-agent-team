@@ -43,13 +43,13 @@
 2. Windows 文件：`C:\Users\青鸟\Documents\qa-test-accounts.md`
 3. Notion 页面，标题「测试账号」
 4. 保险库登录项，名称与本地文件里的名称相同
-5. Google 表格，标题「各项目测试账号与凭证」。一个项目一张工作表。表里把环境和系统分开标。不要把几个项目写进同一张工作表。
+5. 谷歌表「测试账号-完整库」是正表，按项目分工作表，放全部账号。「测试账号-给人看」只给人看，不作为查密文的第一来源。旧表「各项目测试账号与凭证」不再作为官方查找处。
 
 日常按快慢找，不按哪份算正式来源排：
 
 - 先看云电脑文件 `/workspace/qa/secrets/qa-test-accounts.md`。这份最快。
 - Windows 文件 `C:\Users\青鸟\Documents\qa-test-accounts.md` 是用户自己电脑上的本地副本。
-- Google 表格「各项目测试账号与凭证」和 Notion 页「测试账号」是云端备份，用来防丢。日常不要先翻这两处。
+- 谷歌表「测试账号-完整库」和 Notion 页「测试账号」是云端正本，用来防丢。先看本机，没有再查完整库。「测试账号-给人看」不是查密文的第一来源。
 - 保险库同名登录用来填登录表单，不拿来当第一查找处。
 
 有人要看密码时，只指出 Notion「测试账号」页、上面的本地文件路径，或这张 Google 表格。密码和验证器密钥不贴进聊天、Git、记忆、通知，也不写进各项目知识库。
@@ -82,7 +82,7 @@
 2. 重新连接 Notion、Google Drive、GitHub 等连接器。连接器授权、云电脑登录态、Cookie 不能从备份恢复，必须由用户重新点授权、重新登录。
 3. 打开 Google Drive「QA机器人备份」下当前账号子目录（现在是 Faker/）的最新周备份包，按包内 `RESTORE.md` 对照。几个账号对上看、列出差异、等用户点头再改，不要自动覆盖对方已有内容。不要和 sacks 记忆自动对倒。
 4. 运行 `/workspace/qa/qa-ready.sh`，不要默认跑 bootstrap 或 apt。
-5. 测号不在包里、也不在 Git。只指出位置：云电脑 `/workspace/qa/secrets/qa-test-accounts.md`、Windows `C:\Users\青鸟\Documents\qa-test-accounts.md`、Notion「测试账号」页、保险库同名登录、谷歌表「各项目测试账号与凭证」。聊天不写密码。
+5. 测号不在包里、也不在 Git。只指出位置：云电脑 `/workspace/qa/secrets/qa-test-accounts.md`、Windows `C:\Users\青鸟\Documents\qa-test-accounts.md`、Notion「测试账号」页、保险库同名登录、谷歌表「测试账号-完整库」。聊天不写密码。
 6. 不要恢复完整聊天记录、`store.db`、附件原文。业务记忆点以各项目 Notion 知识库为准；账号记忆以周备份 `memory/` 为准。Cursor 工作台对话正文仍在用户的 Cursor 账号里，地址以 `grokbot/workbench-map.md` 为准。
 
 ## Cursor 两条通道

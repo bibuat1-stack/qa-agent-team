@@ -788,7 +788,7 @@ def test_old_ledger_item_without_new_keys_stays_one_case(tmp_path, capsys):
     root = tmp_path / "esc"
     log = write_log(tmp_path, "log.txt", failure_log(NODE_A))
     signature = ask.failure_signature(PROBLEM, [log.read_text(encoding="utf-8")])
-    key = ask.problem_hash("fix", REPO, signature)
+    key = ask.problem_hash(REPO, signature)
     root.mkdir()
     (root / "ledger.json").write_text(
         json.dumps(
@@ -833,3 +833,64 @@ def test_old_ledger_item_without_new_keys_stays_one_case(tmp_path, capsys):
     assert followed["api_ready"] is True
     assert AGENT in (root / key / "request.json").read_text(encoding="utf-8")
     assert "旧账本结论" in (root / key / "followup.md").read_text(encoding="utf-8")
+
+
+def test_hash_ignores_mode_and_advise_can_continue_as_fix(tmp_path, capsys):
+    root = tmp_path / "esc"
+    log = write_log(tmp_path, "log.txt", failure_log(NODE_A))
+    signature = ask.failure_signature(PROBLEM, [log.read_text(encoding="utf-8")])
+    assert ask.problem_hash(REPO, signature) == ask.problem_hash(REPO, signature)
+
+    code, advised = prepare(capsys, root, log, mode="advise")
+    assert code == 0
+    assert advised["decision"] == "allowed"
+    key = advised["hash"]
+    assert key == ask.problem_hash(REPO, signature)
+    assert budget_used(root) == 1
+
+    code, pending_fix = prepare(capsys, root, log, mode="fix")
+    assert code == 3
+    assert pending_fix["decision"] == "duplicate"
+    assert pending_fix["hash"] == key
+    assert load_ledger(root)["items"][key]["mode"] == "advise"
+    assert budget_used(root) == 1
+
+    code, _recorded = run(
+        capsys,
+        [
+            "record",
+            "--root",
+            str(root),
+            "--hash",
+            key,
+            "--status",
+            "answered",
+            "--summary",
+            "先诊断：字段路径写错",
+            "--agent-url",
+            AGENT_URL,
+        ],
+    )
+    assert code == 0
+
+    code, fixed = prepare(capsys, root, log, mode="fix")
+    assert code == 0
+    assert fixed["decision"] == "allowed"
+    assert fixed["hash"] == key
+    assert fixed["continued_from"] == "advise"
+    assert fixed["mode"] == "fix"
+    assert fixed["agent_url"] == AGENT_URL
+    assert "未再扣额度" in fixed["next"]
+    assert budget_used(root) == 1
+    item = load_ledger(root)["items"][key]
+    assert item["mode"] == "fix"
+    assert item["status"] == "pending"
+    assert item["continued_from"] == "advise"
+    request = json.loads((root / key / "request.json").read_text(encoding="utf-8"))
+    assert request["kind"] == "followup"
+    assert "转为修复" in (root / key / "followup.md").read_text(encoding="utf-8")
+
+    code, api_data = run(capsys, ["api", "--root", str(root), "--hash", key])
+    assert code == 0
+    assert api_data["dry_run"] is True
+    assert "/runs" in api_data["POST"]
