@@ -10,7 +10,8 @@
 | --- | --- |
 | `run_main_flow.py` | 入口。`--site` 选 yy567、muskan、paglu 或 all，`--step` 选 login、nav、wingo、recall、switch、all |
 | `sites.py` | 生产入口。YY567、MuskanClub、PagluGame |
-| `credentials.py` | 读密码。读不到就退出码 2 |
+| `credentials.py` | 按本机、完整库、临时文件、环境变量的顺序读密码。读不到就退出码 2 |
+| `test_secret_lookup.py` | 用临时文件和假数据检查取密顺序，不访问生产 |
 | `browser_steps.py` | 清会话、登录、底栏、进 Win Go、回收、换厂商 |
 | `verdicts.py` | 回收判定。不看页面 |
 | `test_recall_verdict.py` | 只检查判定函数，不访问生产 |
@@ -20,19 +21,20 @@
 在仓库根目录、已安装依赖的环境里：
 
 ```bash
-export T8T_PASSWORD='从本机账号资料读取，不要写进仓库'
 python grokbot/scripts/t8t/run_main_flow.py --site yy567 --step login
 python grokbot/scripts/t8t/run_main_flow.py --site muskan --step all
 ```
 
 Muskan 不传 `--phone` 时用 9959950001。`--phone` 只能是 9959950001、9959950002、9959950003。
 
-密码二选一：
+取密顺序：
 
-1. 环境变量 `T8T_PASSWORD`
-2. 环境变量 `T8T_ACCOUNTS_MODULE` 指向本机模块，模块提供 `get_password(phone)`
+1. 本机 `/workspace/qa/secrets/qa-test-accounts.md`。这个文件权限 600，不进仓库。也可以把 `T8T_ACCOUNTS_MODULE` 指到本机模块，模块提供 `get_password(phone)`。
+2. 本机没有该号密码时，再查谷歌表「测试账号-完整库」里本项目的工作表。表地址只从本机 `/workspace/qa/secrets/account-sheet-pointers.md` 或环境变量 `T8T_ACCOUNT_SHEET_POINTER` 读。没有谷歌凭证就跳过。凭证放在 `T8T_GOOGLE_ACCESS_TOKEN` 或 `GOOGLE_ACCESS_TOKEN`，不要写进仓库。
+3. 再看 `T8T_SECRET_FILE`，或 `T8T_QA_TEMP_MIRROR` 指向的本机「QA临时文件」镜像。
+4. `T8T_PASSWORD` 只放在最后，当作这一次运行的临时覆盖，不是正式来源。
 
-密码放在哪，读 `grokbot/HANDOFF.md` 的「测试账号在哪」。本机探路账号模块只在本机引用，常见位置是 `/workspace/qa/t8t/multisite/thai-gray/lib/` 下的 accounts。不要把那个文件提交进仓库。
+「测试账号-给人看」和 Notion「测试账号」不是查找来源。全部找不到时退出码 2。脚本不打印密码。
 
 浏览器默认无头，直连，启动参数带 `--no-proxy-server`，不走 `127.0.0.1:8791`。要看窗口加 `--headed`。
 
@@ -41,7 +43,7 @@ Muskan 不传 `--phone` 时用 9959950001。`--phone` 只能是 9959950001、995
 本地检查判定函数：
 
 ```bash
-python -m pytest grokbot/scripts/t8t/test_recall_verdict.py -q
+python -m pytest grokbot/scripts/t8t/test_recall_verdict.py grokbot/scripts/t8t/test_secret_lookup.py -q
 ```
 
 CI 的回归工作流只跑 `tests/`，不会执行这些生产脚本。
