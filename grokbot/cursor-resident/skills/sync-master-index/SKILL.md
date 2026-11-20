@@ -24,7 +24,7 @@ description: 查账号、知识库、技能、备份、踩坑、工作台或大�
 
 ## 正本怎么认
 
-- 工作台正本是谷歌表「QA机器人Cursor工作台」。不要再做一份 Git 正本。只续本账号那一页。
+- 工作台正本是谷歌表「QA机器人Cursor工作台」。不要再做一份 Git 正本。只续本账号那一页。对照另一账号（含已标停用的 sacks）时仍要读对方页和派单记录，并读对方最新完整备份和较新的增量或 skill-sync 包。步骤只在 `grokbot/BACKUP.md`「恢复与对照同步检查清单」。本技能不改映射。和「正本在 `grokbot/workbench-map.md`」的说法冲突时，列出差异，等用户确认，不在这里改认。
 - Cursor 执行技能以已合并的 `grokbot/cursor-resident/skills/` 为准。`grokbot/skills/` 只供对账。
 - 踩坑正本是 Notion「01 共用方法」下「共用踩坑库」。
 - 账号查找先本机，再查「测试账号-完整库」。

@@ -16,10 +16,10 @@
 
 ## 目录
 
-- `HANDOFF.md`：接手说明。仓库放什么、不放什么、测试账号去哪找、云电脑日常开工跑 `qa-ready.sh`、两条 Cursor 通道、nova 暂停、可复制转发文本、专项测试号。用户说「同步」的固定顺序与 `BACKUP.md` 同一段。
-- `BACKUP.md`：Git 与 Google Drive 备份怎么分。日常先把共用内容同步到 Git；Drive 文件夹「QA机器人备份」只按账号子目录保存周备份压缩包。完整备份包根目录要有备份那一刻的工作点交接。
+- `HANDOFF.md`：接手说明。仓库放什么、不放什么、测试账号去哪找、云电脑日常开工跑 `qa-ready.sh`、两条 Cursor 通道、nova 暂停、可复制转发文本、专项测试号。用户说「同步」的固定顺序与恢复验收见 `BACKUP.md`，本文件不另抄一套。
+- `BACKUP.md`：Git 与 Google Drive 备份怎么分。日常先把共用内容同步到 Git；Drive 文件夹「QA机器人备份」只按账号子目录保存周备份压缩包。完整备份包根目录要有备份那一刻的工作点交接。恢复与对照同步的检查清单也在这份说明里。Git 拉完不算同步完成。对照时要只读对方账号最新完整备份、较新的增量或 skill-sync 包，以及双方工作台页（含 sacks）。
 - `skills/account-backup/`：本账号 Google Drive 周备份或换号全量备份。按 `BACKUP.md` 打包，包内必含这份交接。和日备读回不是同一件事。
-- `workbench-map.md`：工作台映射正本。按账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`。现在查、写用 `工作台-Faker`。谷歌表只是同步副本。
+- `workbench-map.md`：工作台映射。按账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`。现在查、写当前号用 `工作台-Faker`。对照 sacks 时仍要读该页。本文件与 `BACKUP.md` 对正本在 Git 还是在表的说法不一致，恢复时不自动改认。
 - `MEMORY-EXPORT.md`：新 Grok Bot 接手时读这份备份，里面是已存储的指令、身份、职业、项目和偏好。
 - `bots/roster.md`：在用与暂停角色。实际项目机器人已经不是早期四个模板角色。
 - `bots/`：早期四份模板保留，只作对照，不删除。另有 Cursor专家升级技能原文。

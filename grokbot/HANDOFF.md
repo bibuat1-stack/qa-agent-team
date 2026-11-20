@@ -12,8 +12,8 @@
 - 共用技能备份：`grokbot/skills/`。
 - 自动化框架：用例、页面、配置和执行入口。写法见根目录 `AGENTS.md`。
 - 协作规范：本文件、`grokbot/README.md`、`grokbot/skills/project-bot-collab/`。
-- 工作台映射正本：`grokbot/workbench-map.md`。按 Grok Bot 账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`，另有账号对照。现在查、写用 `工作台-Faker`。
-- 备份分工：`grokbot/BACKUP.md`。Git 与 Google Drive「QA机器人备份」各放什么。
+- 工作台映射：`grokbot/workbench-map.md`。按 Grok Bot 账号分页：`工作台-Faker`、`派单记录-Faker`、`工作台-sacks`、`派单记录-sacks`，另有账号对照。现在查、写当前号用 `工作台-Faker`。对照 sacks 的页，以及「正本在本文件还是在谷歌表」的冲突，见 `grokbot/BACKUP.md`，本文件不另改认。
+- 备份分工：`grokbot/BACKUP.md`。Git 与 Google Drive「QA机器人备份」各放什么。恢复与对照同步的检查清单也在该文件。Git 拉完不算同步完成。
 
 云电脑共用脚本的备份在 `tools/cloud-computer/`（`qa-ready.sh`、`bin/box_health.py`、`bin/html_report.py`，以及浏览器默认脚本 `bin/browser_defaults.py`、`bin/open_direct_headed.py`、`bin/README-browser.md`）。云电脑上仍运行 `/workspace/qa/qa-ready.sh` 和 `/workspace/qa/bin/` 里的同名文件。UI 回归默认无头；有头窗口默认 1920×1200。不要改平台桌面 Chrome，也不要改 8791。方案正文不进 Git。登录态、租约、测号和代理密码也不进 Git。
 
@@ -76,14 +76,15 @@
 
 同一账号日常说「同步」：把尚未回写仓库的共用改动开 PR，总控不自己合并。
 
-换到新 Grok Bot 账号或新机器后，用户对总控说「同步」时，按固定顺序做：
+换到新 Grok Bot 账号或新机器后，或要对照另一账号（含已标停用的 sacks）时，固定顺序和恢复验收只以 `grokbot/BACKUP.md` 的「用户说「同步」」和「恢复与对照同步检查清单」为准。本文件不另抄一套。测号位置仍见本文件「测试账号在哪」。连接器要重新授权。云电脑日常开工仍跑 `/workspace/qa/qa-ready.sh`。
 
-1. 拉取公开仓库 https://github.com/bibuat1-stack/qa-agent-team ，按 `grokbot/HANDOFF.md` 安装技能，按花名册建机器人。换号后机器人 id 可能变化，不要把旧 id 当成当前号。
-2. 重新连接 Notion、Google Drive、GitHub 等连接器。连接器授权、云电脑登录态、Cookie 不能从备份恢复，必须由用户重新点授权、重新登录。
-3. 打开 Google Drive「QA机器人备份」下当前账号子目录（现在是 Faker/）的最新周备份包，按包内 `RESTORE.md` 对照。几个账号对上看、列出差异、等用户点头再改，不要自动覆盖对方已有内容。不要和 sacks 记忆自动对倒。
-4. 运行 `/workspace/qa/qa-ready.sh`，不要默认跑 bootstrap 或 apt。
-5. 测号不在包里、也不在 Git。只指出位置：云电脑 `/workspace/qa/secrets/qa-test-accounts.md`、Windows `C:\Users\青鸟\Documents\qa-test-accounts.md`、Notion「测试账号」页、保险库同名登录、谷歌表「测试账号-完整库」。聊天不写密码。
-6. 不要恢复完整聊天记录、`store.db`、附件原文。业务记忆点以各项目 Notion 知识库为准；账号记忆以周备份 `memory/` 为准。Cursor 工作台对话正文仍在用户的 Cursor 账号里，地址以 `grokbot/workbench-map.md` 为准。
+接手时按该检查清单做，不要漏掉这几条：
+
+- 不止拉 Git。还要只读 Google Drive 对方账号目录的最新完整备份，并查比它新的增量包或 skill-sync 包。从中读规则、技能、角色说明、协作规范、工作台映射。记录源文件、更新时间、账号。
+- 核对谷歌表「QA机器人Cursor工作台」里对方和本账号各自的工作台页、派单记录、已有 Cursor 主对话、主题或需求子对话、Project 协调器。sacks 要看「工作台-sacks」和「派单记录-sacks」。
+- 本账号页是空的、仓库旧快照、旧机器人停用标签、当前账号 Projects 列表没有记录，都不能单独当成所有入口缺失。机器人停用不等于该账号里已有的 Cursor 对话失效。
+- 备份包不覆盖仓库技能和现网技能。记忆不对倒，也不和 sacks 的记忆自动对倒。凭证、密钥、测号明文不进 Git，也不打进备份包。
+- Git 拉完不算同步完成。验收要有来源和时间对照、规则和技能差异、各号与协调器的核验状态、访问阻塞、未同步项。
 
 ## Cursor 两条通道
 
@@ -91,7 +92,7 @@
 
 升级走常驻 Ask、Plan、Debug、Multitask，再加上 `tools/ask_cursor.py`。一事一案，一个 Agent，一个 PR。工作台不替代升级。
 
-映射正本在 `grokbot/workbench-map.md`。谷歌表「QA机器人Cursor工作台」只是同步副本，页也按账号分开。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查表先打开对应账号那一页。现在在用的是 `工作台-Faker` 和 `派单记录-Faker`。`工作台-sacks` 只作历史对照，不得续聊，那些稳定 id 不要当成当前号。工作台-Faker 里，总控（King）常驻、自动化踩坑知识库常驻已是「在用」。T8T需求分析「故事220」和「故事221」需求分析行已是「在用」，未写入该号常驻行。其余 Faker 行的对话 URL 和对话 id 仍为空，状态仍为「空」。不要给那些行编造对话。
+本文件原有说法：映射正本在 `grokbot/workbench-map.md`，谷歌表「QA机器人Cursor工作台」只是同步副本。`grokbot/BACKUP.md` 和常驻规则包另有「正本在表」的说法。两套并存，恢复时不自动改认，见该文件「正本冲突先挂起」。页按账号分开。谷歌硬盘只保存全量压缩包。日常先把映射同步到 Git，再把压缩包备份到硬盘。查、写当前号先打开 `工作台-Faker` 和 `派单记录-Faker`。对照时必须再读 `工作台-sacks` 和 `派单记录-sacks`。sacks 的稳定 id 不要当成当前号，停用或空行也不等于那些 Cursor 对话失效。不把 sacks 的对话拿来当当前号续聊。工作台-Faker 里，总控（King）常驻、自动化踩坑知识库常驻已是「在用」。T8T需求分析「故事220」和「故事221」需求分析行已是「在用」，未写入该号常驻行。其余 Faker 行的对话 URL 和对话 id 仍为空，状态仍为「空」。不要给那些行编造对话。三种入口、JoinProject 和恢复验收见 `grokbot/BACKUP.md` 检查清单，本段不另写。
 
 细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
