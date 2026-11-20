@@ -66,12 +66,12 @@ requirements.txt          Python 依赖
 
 1. 接口只通过 `common.http_client` 中的 `http_client` 调用，结果用 `common.assertions` 中的函数断言。用例里不要直接调用 `requests` 或 `httpx`，也不要另写客户端或断言工具；缺少能力时先扩展 `http_client` 或 `assertions`。
 2. 每个用例都要有 marker：类型 `api` 或 `ui`（在模块顶部用 `pytestmark`），级别 `smoke` 或 `regression`，以及模块名（例如 `example_posts`）。新 marker 先在 `pytest.ini` 中注册，否则 `--strict-markers` 会报错。
-3. 不写死环境、地址、账号、令牌或任何密钥。地址放在 `config/environment.py`，其他配置放在 `config/settings.py`，密钥只从环境变量读取（本地用 `.env`，CI 用 GitHub secrets）。用例只写相对路径，例如 `http_client.get("/posts/1")`。
+3. 框架用例不把某一环境写死进断言。地址放在 `config/environment.py`，其他配置放在 `config/settings.py`。令牌和密钥类仍只从环境变量读取（本地用 `.env`，CI 用 GitHub secrets），不写进用例。测试账密可以明文出现在仓库文档和约定里。用例只写相对路径，例如 `http_client.get("/posts/1")`。
 4. 不要为了让用例通过而放宽或删除断言，也不要用 skip、xfail 或重跑掩盖失败。产品行为确实变了时，按新的需求或接口契约更新预期，并在 PR 里写明依据。
 5. UI 用例使用 Page Object：页面类放在 `pages/`，继承 `BasePage`，只放定位器和页面操作；断言写在用例里，用 Playwright 的 `expect`。优先使用 `get_by_role`、`get_by_label` 等语义定位器，依靠 Playwright 的自动等待，不写固定等待。
 6. 用例的 docstring 写明用例编号、用例名称、前置条件、测试步骤和预期结果，格式参考示例用例。
 7. 测试数据放在 `data/`，用 `common.utils.load_data()` 或 `api_data` fixture 读取；会创建数据的用例用 `unique_name()` 生成唯一名称。
-8. 日志和断言信息会自动脱敏。不要用 `print` 或日志输出令牌、密码、Cookie 或完整的认证头。
+8. 日志和断言信息会自动脱敏。不要用 `print` 或日志输出令牌、Cookie 或完整的认证头。测试账密不再和令牌绑成同一条禁写。
 
 ## 运行测试
 
@@ -165,7 +165,7 @@ CI 失败通知的 webhook payload 含 `next` 字段：先在仓库里运行 `st
 - 在新分支上提交并打开 PR，不直接推送 main。用例、框架、CI 和其他业务改动不自己合并，等人审核。
 - `grokbot/skills/` 的技能备份更新频繁。一次改动只包含 `grokbot/skills/`，以及为这次备份同步的 `grokbot/README.md` 或这里的目录说明时，CI 通过后由 Cloud Agent 自行合并该 PR。夹带其他目录的改动仍等人审核。
 - PR 描述写清楚改了什么、根因是什么、怎么验证的（命令和结果）。改动共享框架代码（`conftest.py`、`common/`、`config/`、`pages/base_page.py`）时，说明影响范围。
-- 不提交 `.env`、令牌、密码、报告或日志。
+- 不提交 `.env`、令牌、报告或日志。测试账密明文可以提交。密钥类密码不提交。
 
 ## Cursor Cloud specific instructions
 
