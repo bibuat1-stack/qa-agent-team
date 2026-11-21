@@ -37,6 +37,7 @@ UI 探路与写脚本：由各项目执行方自己处理。选型见 [box-ui-sp
 5. 本地 Web/dev server：可加载 [webapp-testing](sand-workflow:webapp-testing)
 6. 不做生产真实资金写操作。凭证走 Vault，不进聊天、Notion、记忆或仓库明文
 7. 默认直连，不经 `127.0.0.1:8791` 代理。路线表见 [box-ui-speed](sand-workflow:box-ui-speed)。不要给独立浏览器设置该代理。只有必须用保险库填表、要用户接管登录，或同一地址直连已证实失败时，才开平台自带桌面浏览器。
+8. 有头、无头和 Playwright Extension 怎么选，见 [box-ui-speed](sand-workflow:box-ui-speed)「有头、无头和 Playwright Extension」。
 
 ## Modern Web Guidance（仅探路写脚本）
 

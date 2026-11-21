@@ -26,4 +26,11 @@ description: 用 playwright-cli 做网页探路、抓无障碍快照、点控、
 
 登录态可以保存和加载，文件按项目隔离。密码和令牌不写进聊天，不写进会推到 GitHub 的文件。
 
+有头、无头和 Playwright Extension 怎么选，见 box-ui-speed「有头、无头和 Playwright Extension」。
+
+1. 边改脚本、不用盯画面：无头自己开浏览器。登录态用 `state-save` / `state-load`。
+2. 接已经打开、已经登录的窗口：优先 `attach --cdp`，只接自己拉起的 Chrome for Testing。
+3. 插件接已打开的有头窗口：`attach --extension`。配好自动连接 token 可自动连。token 不写进仓库、聊天或技能正文。
+4. 无头不要走 `attach --extension`。登录态仍用 `state-save` / `state-load`，或对自己拉起的无头 Chrome for Testing 走 `attach --cdp`。
+
 只在测试环境做请求拦截。生产配置禁止。生产上禁止提交的操作，这里也不做成会提交的步骤。
