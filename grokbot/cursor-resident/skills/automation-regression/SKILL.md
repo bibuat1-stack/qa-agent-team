@@ -13,6 +13,7 @@ description: 写或跑界面和接口自动化回归，并核对需求与实现�
 3. 能用接口断言的先做接口。契约核对走 api-contract-testing。
 4. 不做生产真实资金写入。生产上禁止提交的操作，脚本里也不做成会提交的步骤。
 5. 默认直连。路线见 box-ui-speed。
+6. 有头、无头和 Playwright Extension 怎么选，见 box-ui-speed「有头、无头和 Playwright Extension」。
 
 ## 手测转脚本
 

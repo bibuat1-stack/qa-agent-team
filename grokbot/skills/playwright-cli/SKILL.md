@@ -57,6 +57,19 @@ playwright-cli -s=<s> screenshot --filename=/workspace/<路径>.png
 
 状态：`state-save` / `state-load` 可复用登录态文件，文件路径按项目隔离，**文件里不要把明文密码写进聊天或 Notion**。
 
+## 有头、无头怎么接
+
+怎么选见 [box-ui-speed](sand-workflow:box-ui-speed)「有头、无头和 Playwright Extension」。这里只补命令，不重抄实测数字。
+
+```bash
+playwright-cli -s=<s> state-save <登录态文件>
+playwright-cli -s=<s> state-load <登录态文件>
+playwright-cli -s=<s> attach --cdp
+playwright-cli -s=<s> attach --extension
+```
+
+边改脚本、不用盯画面：无头，脚本自己开浏览器，登录态用上面的 `state-save` / `state-load` 复用，不必靠插件。要盯着看、边改边看：有头 Chrome for Testing 按 box-ui-speed 拉起后再跑。接已经打开、已经登录的窗口，优先 `attach --cdp`，只接自己拉起的 Chrome for Testing。插件接已打开的有头窗口用 `attach --extension`；配好自动连接 token 可自动连，token 不写进仓库、聊天或技能正文。无头不要走 `attach --extension`：登录态仍用 `state-save` / `state-load`，或对自己拉起的无头 Chrome for Testing 走 `attach --cdp`。
+
 ## 安全
 
 - 登录走 sign-in / vault / in-chat-forms
