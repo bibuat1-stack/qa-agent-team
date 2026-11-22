@@ -50,7 +50,7 @@ UI 探路与写脚本：由各项目执行方自己处理。选型见本技能�
    - **Playwright MCP**：只用于不需要路径留痕的快速查看。不要为了补 trace 去改连接器启动参数，除非用户明确要求。
    - **[agent-browser](sand-workflow:agent-browser)**：备用。它的 trace 是 Chrome 开发者工具的 json，不算路径留痕。
 4. **本地 Web 应用/dev server**：可加载 [webapp-testing](sand-workflow:webapp-testing)（先侦察再动作、`networkidle`、with_server）。远程业务站仍走第 3 条。
-5. **探路跑通后固化**：当场用 `generate-locator` 或 `recording-stop` 写成 Playwright 脚本落盘（角色/可访问名定位，开 trace）。第二次起回到第 2 条。写脚本时可加载 `modern-web-guidance`。
+5. **探路跑通后固化**：能复用的操作或测试用例都要写成复用脚本，脚本要边测边改。当场用 `generate-locator` 或 `recording-stop` 写成 Playwright 脚本落盘（角色/可访问名定位，开 trace）。第二次起回到第 2 条。写脚本时可加载 `modern-web-guidance`。
 6. **必须看画面**（canvas、游戏前台、视觉核对）：优先用 Playwright 的页面截图，无头即可。用户要实时看或接手时，再开自启直连有头窗口。不要为此打开平台自带桌面浏览器。画布、游戏画面、图表等读不到按钮结构时，改走 [canvas-ui-testing](sand-workflow:canvas-ui-testing)；普通页仍先读结构树再配截图。独立浏览器和网页工具都够不到时（原生桌面等），才用 computerUse 操作桌面本身。要走 8791 代理或开平台 Chrome 时，先提醒用户。
 7. **禁止**：用 Shell 的 xdotool、CDP、Playwright 去驱动机器人电脑**自带桌面浏览器窗口**（平台边界）。playwright-cli / agent-browser / 仓库 Playwright 跑的是独立浏览器或目标站点，不等于操控桌面 Chrome。
 
@@ -93,7 +93,7 @@ UI 探路与写脚本：由各项目执行方自己处理。选型见本技能�
 1. **识别**：按本技能选型取树，默认 playwright-cli `snapshot`（需要编号和位置时加 `--boxes`）。拿到控件 ref、role、name 和可选的 `[box=…]`。必须看画面时再配 Playwright 页面截图。禁止一上来猜坐标。动作只点 ref / role / testId。这就是文中「SoM / 标号截图」的官方做法，不要另装 SoM 框架。画布页改走 [canvas-ui-testing](sand-workflow:canvas-ui-testing)。
 2. **跑通**：按业务步骤用 ref 点击、填表、断言。每步动作后验状态（URL/文案/控件）。可挂接口监听区分前后端。
 3. **自愈**：同一步最多试 ① 项目库选择器 ② a11y role/name ③ 结构树可见文案（可用 `find`，必要时 `snapshot --boxes` 对照编号）。全失败则 fail-closed，记缺口，禁止连点乱试。
-4. **落脚本（必做）**：流程首次完整跑通后，**当场**用 `generate-locator` 或 `recording-stop` 生成 Playwright 脚本（或补进现有 spec），写入本项目约定目录，步骤带知识点/用例编号注释。选择器写入本项目选择器库。写脚本时可先加载 `modern-web-guidance`。
+4. **落脚本（必做）**：能复用的操作或测试用例都要写成复用脚本，脚本要边测边改。流程首次完整跑通后，**当场**用 `generate-locator` 或 `recording-stop` 生成 Playwright 脚本（或补进现有 spec），写入本项目约定目录，步骤带知识点/用例编号注释。选择器写入本项目选择器库。写脚本时可先加载 `modern-web-guidance`。
 5. **复用**：同一流程第二次起只跑脚本。脚本失败再探路修复，修完立刻更新脚本，不长期靠 MCP/CLI 手点。
 6. **升级门槛**：连续成功 ≥2 次或用户明确要回归的路径，必须已有脚本，否则算未完成。
 

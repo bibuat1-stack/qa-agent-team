@@ -101,7 +101,7 @@ Generate and extend code **only** under this tree, rooted at the repository root
 
 ## Case authoring rules
 
-Each case should be traceable with: **id, name, preconditions, steps, expected outcome** (in docstring or comments as the project prefers).
+Each case should be traceable with: **id, name, preconditions, steps, expected outcome** (in docstring or comments as the project prefers). UI cases and API cases note which steps go through the UI and which go through the API. Reusable operations and cases are reusable scripts, revised while you test them.
 
 - **Markers:** always use `@pytest.mark.*` — e.g. `smoke`, `regression`, and module tags like `@pytest.mark.module_name`.
 - **Flow:** call `http_client` → then `assertions` helpers.
