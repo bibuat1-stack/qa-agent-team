@@ -69,9 +69,10 @@ requirements.txt          Python 依赖
 3. 框架用例不把某一环境写死进断言。地址放在 `config/environment.py`，其他配置放在 `config/settings.py`。令牌和密钥类仍只从环境变量读取（本地用 `.env`，CI 用 GitHub secrets），不写进用例。测试账密可以明文出现在仓库文档和约定里。用例只写相对路径，例如 `http_client.get("/posts/1")`。
 4. 不要为了让用例通过而放宽或删除断言，也不要用 skip、xfail 或重跑掩盖失败。产品行为确实变了时，按新的需求或接口契约更新预期，并在 PR 里写明依据。
 5. UI 用例使用 Page Object：页面类放在 `pages/`，继承 `BasePage`，只放定位器和页面操作；断言写在用例里，用 Playwright 的 `expect`。优先使用 `get_by_role`、`get_by_label` 等语义定位器，依靠 Playwright 的自动等待，不写固定等待。
-6. 用例的 docstring 写明用例编号、用例名称、前置条件、测试步骤和预期结果，格式参考示例用例。
+6. 用例的 docstring 写明用例编号、用例名称、前置条件、测试步骤和预期结果，格式参考示例用例。UI 用例和接口用例注明哪些步骤走 UI、哪些走接口。
 7. 测试数据放在 `data/`，用 `common.utils.load_data()` 或 `api_data` fixture 读取；会创建数据的用例用 `unique_name()` 生成唯一名称。
 8. 日志和断言信息会自动脱敏。不要用 `print` 或日志输出令牌、Cookie 或完整的认证头。测试账密不再和令牌绑成同一条禁写。
+9. 能复用的操作或测试用例都要写成复用脚本，脚本要边测边改。
 
 ## 运行测试
 
