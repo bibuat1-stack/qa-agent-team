@@ -57,10 +57,10 @@ IMAGE_TYPES = {
 SECRET_TEXT = (
     (re.compile(r"(?i)\b(bearer)\s+\S+"), r"\1 ***"),
     (
-        re.compile(r"(?i)\b(password|passwd|pwd|token|secret|cookie|authorization|otp)\b\s*[:=]\s*\S+"),
+        re.compile(r"(?i)\b(token|secret|cookie|authorization|otp)\b\s*[:=]\s*\S+"),
         r"\1=***",
     ),
-    (re.compile(r"(验证码|密码|口令)\s*[:=：]\s*\S+"), r"\1=***"),
+    (re.compile(r"(验证码|密钥)\s*[:=：]\s*\S+"), r"\1=***"),
     (re.compile(r"eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}"), "***"),
 )
 BLOCKED_PARTS = {"secrets", "leases"}

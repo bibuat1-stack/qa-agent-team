@@ -36,7 +36,7 @@ is_bug/是缺陷, requirement_point/是需求点, requirement_mismatch/与需求
 
 图片路径相对 results.jsonl 所在目录，必须落在这个目录里面。脚本把图片转成 data URI 嵌进 HTML，
 不引用外链。box 是原图像素坐标，报告里用红框叠在图上，白话写在图旁。
-密码、验证码、token 会换成 ***。不读 secrets 或 leases 目录，也不把整份原始 JSON 打进报告。
+验证码、token 和密钥类会换成 ***。测试账密按约定保留。不读 secrets 或 leases 目录，也不把整份原始 JSON 打进报告。
 """
 from __future__ import annotations
 
@@ -277,7 +277,7 @@ def render_report(
     generated = format_shanghai("", generated_at)
     parts.append(
         f'<p class="footer">报告生成于 {html.escape(generated)}。图片已嵌进本文件，无外链。'
-        "密码、验证码和 token 已写成 ***。本文件不包含 secrets 或 leases 目录内容。</p>"
+        "验证码、token 和密钥类已写成 ***。测试账密按约定保留。本文件不包含 secrets 或 leases 目录内容。</p>"
     )
     parts.append("</div>")
     parts.extend(shot_dialog_html())

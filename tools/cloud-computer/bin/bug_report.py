@@ -220,7 +220,7 @@ def render_bugs_html(
     generated = format_shanghai("", generated_at)
     parts.append(
         f'<p class="footer">缺陷文档生成于 {html.escape(generated)}。图片已嵌进本文件，无外链。'
-        "密码、验证码和 token 已写成 ***。依据栏未填写的一律标为「缺，待补」。</p>"
+        "验证码、token 和密钥类已写成 ***。测试账密按约定保留。依据栏未填写的一律标为「缺，待补」。</p>"
     )
     parts.append("</div>")
     parts.extend(shot_dialog_html())
@@ -329,7 +329,7 @@ def render_bugs_md(
     generated = format_shanghai("", generated_at)
     lines.append("---")
     lines.append("")
-    lines.append(f"文档生成于 {generated}。密码、验证码和 token 已写成 ***。依据栏未填写的一律标为「缺，待补」。")
+    lines.append(f"文档生成于 {generated}。验证码、token 和密钥类已写成 ***。测试账密按约定保留。依据栏未填写的一律标为「缺，待补」。")
     lines.append("")
     return "\n".join(lines)
 

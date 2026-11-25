@@ -173,14 +173,15 @@ def test_html_report(tmp: Path) -> None:
     batch = tmp / "batch"
     batch.mkdir()
     (batch / "step.png").write_bytes(tiny_png())
-    secret = "example-secret-value"
+    account_password = "demo-account-pass"
+    token_value = "merchant-token-value"
     rows = [
         {
             "id": "DEMO-1",
             "title": "示例",
             "result": "失败",
-            "summary": f"密码={secret}",
-            "password": secret,
+            "summary": f"密码={account_password} token={token_value}",
+            "password": account_password,
             "shots": [{"file": "step.png", "caption": "红框标出按钮", "box": [1, 2, 3, 4]}],
         },
         {
@@ -214,9 +215,11 @@ def test_html_report(tmp: Path) -> None:
         "红框坐标没有按原图尺寸写进报告",
     )
     check("红框标出按钮" in report, "白话说明不在图旁")
-    check(secret not in report, "报告里仍有密钥")
+    check(f"密码={account_password}" in report, "测号密码应保留明文")
+    check("密码=***" not in report, "不应把测号密码写成 ***")
+    check(token_value not in report, "报告里仍有 token")
     check("should-not-leak" not in report, "报告里仍有 Bearer 后面的值")
-    check("密码=***" in report and "Bearer ***" in report, "脱敏替换不完整")
+    check("token=***" in report and "Bearer ***" in report, "token 或 Bearer 没有脱敏")
     check(report.count("data:image") == 1, "范围外的文件不应被嵌进报告")
     check("http://" not in report and "https://" not in report, "报告引用了外链")
     check("<script src=" not in report, "报告引用了外链脚本")
@@ -229,7 +232,9 @@ def test_html_report(tmp: Path) -> None:
     check(bug_mds[0].name == f"{prefix}-bugs.md", "缺陷 Markdown 前缀与正报告不一致")
     for extra in (bug_htmls[0], bug_mds[0]):
         body = extra.read_text(encoding="utf-8")
-        check(secret not in body and "should-not-leak" not in body, f"{extra.name} 里仍有密钥")
+        check(f"密码={account_password}" in body, f"{extra.name} 应保留测号密码")
+        check(token_value not in body and "should-not-leak" not in body, f"{extra.name} 里仍有 token")
+        check("token=***" in body, f"{extra.name} 没有把 token 写成 ***")
         check("缺，待补" in body, f"{extra.name} 没有把缺的依据标成待补")
 
     missing = subprocess.run(
