@@ -1,4 +1,4 @@
-version: 2026.11.22.3
+version: 2026.11.25.1
 
 # 常驻规则包
 
@@ -40,7 +40,9 @@ Cursor 平时直接拉 Git 最新来用，不必先去硬盘找。Cursor 自带�
 - 对话对应哪个机器人：查、写当前号时看`工作台-<当前账号>`。同步时用来源账号的页对照，见 `grokbot/BACKUP.md`「恢复与同步检查清单」。
 - 仓库怎么跑：只读根上 `AGENTS.md`。
 - 按步骤做的测试、写库、探路、写脚本：读 `grokbot/cursor-resident/skills/` 里同名技能。
-- 用例复核：读 `grokbot/cursor-resident/skills/case-review/SKILL.md`。规则与 `grokbot/skills/case-review/SKILL.md` 同一句。
+- 用例设计：读 `grokbot/cursor-resident/skills/case-design/SKILL.md`。规则与 `grokbot/skills/case-design/SKILL.md` 同一句。
+- 需求分析：读 `grokbot/cursor-resident/skills/requirement-analysis/SKILL.md`。规则与 `grokbot/skills/requirement-analysis/SKILL.md` 同一句。
+- 用例评审：读 `grokbot/cursor-resident/skills/case-review/SKILL.md`。已用新名「用例评审」，目录仍是 case-review；旧名「用例复核」以本技能为准。规则与 `grokbot/skills/case-review/SKILL.md` 同一句。
 - 换号、换机器，或把一个账号的工作台同步到另一个账号：读 `grokbot/BACKUP.md`「恢复与同步检查清单」。核当前账号每个机器人应有的工作台，核实缺失的补上并读回。Git 拉完不算同步完成。
 
 ## 硬盘镜像
