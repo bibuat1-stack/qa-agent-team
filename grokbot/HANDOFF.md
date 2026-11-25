@@ -116,7 +116,7 @@ Project 分流：
 
 本文件原有说法：映射正本在 `grokbot/workbench-map.md`，谷歌表「QA机器人Cursor工作台」只是同步副本。`grokbot/BACKUP.md` 和常驻规则包另有「正本在表」的说法。两套并存，恢复时不自动改认，见该文件「正本冲突先挂起」。页按账号分开，页名是`工作台-<账号名>`和`派单记录-<账号名>`。查、写进当前账号自己的页。来源账号的页只作对照，不把来源账号的稳定 id 或对话当成当前号。停用或空行也不等于那些 Cursor 对话失效。下面是仓库快照里已经记下的例子，不是同步方向。工作台-Faker：总控（King）常驻改挂「通用」Project，新对话为「在用」，旧对话改为「停用」且行还在。T8T测试主管、T8T需求分析常驻、T8T测试执行、T8T提单回归、T8T知识库总控的常驻为「在用」，归属 T8T。T8T需求分析「故事220」「故事221」「AN-164」仍是各自的需求分析行，不并进常驻行。T8T日报、T8T站点走查不建工作台。M3（含支付）常驻和「重粉库 V3」需求分析行为「暂停」，不新建对话。GO 各行对话列仍空，不预建。自动化踩坑知识库常驻仍是「在用」，对话不改。不要给没有登记的行编造对话。三种入口、补齐和恢复验收见 `grokbot/BACKUP.md` 检查清单，本段不另写。
 
-细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。用例复核见 `grokbot/skills/case-review/SKILL.md`。常驻职责模板见 `grokbot/templates/cursor-workbench-brief.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
+细则见 `grokbot/skills/project-bot-collab/CURSOR-WORKBENCH.md`。填空步骤见 `grokbot/skills/workbench-fill/SKILL.md`。用例评审见 `grokbot/skills/case-review/SKILL.md`（旧名「用例复核」以该技能为准）。用例设计见 `grokbot/skills/case-design/SKILL.md`。需求分析见 `grokbot/skills/requirement-analysis/SKILL.md`。常驻职责模板见 `grokbot/templates/cursor-workbench-brief.md`。共享框架要改代码并开 PR 时，走 `grokbot/bots/0-技能-Cursor专家升级.md`。
 
 ## nova
 
