@@ -64,6 +64,20 @@ UI 探路与写脚本：由各项目执行方自己处理。选型见本技能�
 4. Playwright Extension（Chrome Web Store id `mmlmfjhmonkocbjadbfplnigmagldckm`，官方解包副本在云电脑 `/workspace/qa/browser-extensions/playwright-extension`）也可接已打开的有头窗口。Chrome for Testing 不能从商店装扩展，有头直连窗口启动时加载这份官方副本；无头回归不加载。配好自动连接 token 后约 1 秒能连上；不配要在「Connect to Playwright」页点允许。自动连上后默认往往是空白页，登录态还在，但不会自动停在原来盯着的那一页，还要再打开对应地址。不要把 token 写进仓库、聊天或技能正文。
 5. 无头不要走这个插件：扩展能加载，但 attach 连不上。没有可点的连接页，带上 token 等了 20 秒也没连上。无头复用登录态用 state-save / state-load，或对自己拉起的无头 Chrome for Testing 走调试端口直连。
 
+## 不抢浏览器，改脚本复用页面（2026-11-26）
+
+1. 测试执行不要抢浏览器：禁止接或驱动平台桌面 Chrome；同一登录号同一时间只开一种探路工具，不要混开两套抢同一测号会话。
+2. 改脚本不要每次重新开页面、重新登录。优先复用已打开的页面和已保存的登录态。
+3. 边测边改、不用盯画面：用无头；登录态用 playwright-cli 的 `state-save` / `state-load` 复用。
+4. 要盯着看：自己拉起有头 Chrome for Testing（配置目录 `~/.config/chrome-direct`），用 `playwright-cli attach --cdp` 接到调试端口，改一条再跑，直接看当前页。只接自己拉起的 Chrome for Testing。
+5. 正式复测或回归下结论，仍须进入当前环境当轮现取证，不得拿以前的截图或旧数据当结论；这不妨碍改脚本时复用当轮已打开的页面和登录态文件。
+
+## 先认机器，再选这台上效率最高的方式（2026-11-26）
+
+默认追求效率最高，但不要套死一套工具。先认清当前是哪台机器、什么系统、这台上已有什么，再选最合适且效率最高的方式。不能只说「本地」，要写机器标识。Linux 云电脑和 Windows 本机不能混用路径和命令；macOS 或其他架构也先探再选，不要套现成路径。同一账号下的不同电脑要换机器重新探。各台的 Node、CLI、浏览器版本不必跨机器对齐。登录态和调试端口只属于当前这台机器，不能跨机器、跨系统用。8791 是云电脑桌面浏览器的问题，不要套到用户电脑。用户电脑本身需要的 VPN 或系统代理不要盲目关掉。有头启动按系统分开：Windows 本机有真实桌面，但仍不抢、不驱动用户正在用的系统 Chrome；Linux 云电脑用 `/workspace/qa/bin/open_direct_headed.py` 拉起后再 attach。Linux 上启动 Chrome for Testing 常需要 `--no-sandbox`，Windows 一般不这样套。环境配置要写明机器标识、系统、版本和路径，不要只写「环境已就绪」。用前先探，路径和版本记在本机，不抄到别的机器。Cursor 也必须遵守。
+
+探环境至少看这些，缺什么再补什么，已经能用的不要重装：机器标识、系统与架构、shell 是 PowerShell 还是 bash；Node / npm 是否在当前终端的 PATH 里；是否已有 playwright-cli、Python Playwright，以及 ms-playwright 是否完整；Chrome for Testing 与 headless shell 的目录名按系统分开，Linux 是 chrome-linux64，Windows 是 chrome-win64，不能混用；系统 Chrome 或平台桌面 Chrome 只记录，禁止驱动；当前是否已有调试端口、登录态和仍可用的浏览器会话。云电脑用 bash，开工先跑 `/workspace/qa/qa-ready.sh`，缺了才补，不跑 apt，不全量重装。Windows 用 PowerShell，不要用 bash 的 `&&`、`mkdir -p`，按本机已有的包管理方式补缺的那几样。给哪台机器下命令，就只对那台机器。
+
 ## playwright-cli 要点
 
 - 务必 `-s=<项目短名>`，默认会话会互相踩
