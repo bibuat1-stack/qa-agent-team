@@ -204,16 +204,33 @@ def test_html_report(tmp: Path) -> None:
         check=False,
     )
     check(result.returncode == 0, f"html_report 退出码 {result.returncode}: {result.stderr}")
-    report = (batch / "report.html").read_text(encoding="utf-8")
+    reports = sorted(batch.glob("*-report.html"))
+    check(len(reports) == 1, f"应生成一份带简称和时间的报告，实际 {[path.name for path in reports]}")
+    check(not (batch / "report.html").exists(), "不应再默认写成 report.html")
+    report = reports[0].read_text(encoding="utf-8")
     check("data:image/png;base64," in report, "报告没有内嵌 png")
-    check("left:1px;top:2px;width:3px;height:4px" in report, "红框坐标没有写进报告")
+    check(
+        "left:100.0000%;top:200.0000%;width:300.0000%;height:400.0000%" in report,
+        "红框坐标没有按原图尺寸写进报告",
+    )
     check("红框标出按钮" in report, "白话说明不在图旁")
     check(secret not in report, "报告里仍有密钥")
     check("should-not-leak" not in report, "报告里仍有 Bearer 后面的值")
     check("密码=***" in report and "Bearer ***" in report, "脱敏替换不完整")
     check(report.count("data:image") == 1, "范围外的文件不应被嵌进报告")
-    check("<script" not in report and "http://" not in report and "https://" not in report, "报告引用了外链或脚本")
-    check("通过 1，失败 1" in result.stdout, "stdout 没有计数")
+    check("http://" not in report and "https://" not in report, "报告引用了外链")
+    check("<script src=" not in report, "报告引用了外链脚本")
+    check("失败 1" in result.stdout and "通过 1" in result.stdout, "stdout 没有计数")
+    bug_htmls = sorted(batch.glob("*-bugs.html"))
+    bug_mds = sorted(batch.glob("*-bugs.md"))
+    check(len(bug_htmls) == 1 and len(bug_mds) == 1, "有失败时应写出同前缀缺陷文档")
+    prefix = reports[0].name[: -len("-report.html")]
+    check(bug_htmls[0].name == f"{prefix}-bugs.html", "缺陷文档前缀与正报告不一致")
+    check(bug_mds[0].name == f"{prefix}-bugs.md", "缺陷 Markdown 前缀与正报告不一致")
+    for extra in (bug_htmls[0], bug_mds[0]):
+        body = extra.read_text(encoding="utf-8")
+        check(secret not in body and "should-not-leak" not in body, f"{extra.name} 里仍有密钥")
+        check("缺，待补" in body, f"{extra.name} 没有把缺的依据标成待补")
 
     missing = subprocess.run(
         [sys.executable, str(HTML_REPORT), str(tmp / "missing.jsonl")],
