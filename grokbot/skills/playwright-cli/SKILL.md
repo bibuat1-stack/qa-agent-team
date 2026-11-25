@@ -72,6 +72,8 @@ playwright-cli -s=<s> attach --extension
 
 改脚本不要每次重新 `open` 页面或重新登录。同一会话继续 `snapshot` 和操作；登录态用 `state-save` / `state-load`。要看有头窗口时，只 `attach --cdp` 接到自己拉起的 Chrome for Testing，禁止接或驱动平台桌面 Chrome。测试执行不要抢浏览器，也不要和其他探路工具混开抢同一测号会话。正式复测下结论仍须当轮现取证，不得拿旧截图当结论。
 
+先认清当前是哪台机器、什么系统、这台上已有什么，再选最合适且效率最高的方式。不能只说「本地」，要写机器标识。Linux 云电脑和 Windows 本机不能混用路径和命令；macOS 或其他架构也先探再选，不要套现成路径。同一账号下的不同电脑要换机器重新探。各台的 Node、CLI、浏览器版本不必跨机器对齐。登录态和调试端口只属于当前这台机器，不能跨机器、跨系统用。8791 是云电脑桌面浏览器的问题，不要套到用户电脑。用户电脑本身需要的 VPN 或系统代理不要盲目关掉。有头启动按系统分开：Windows 本机有真实桌面，但仍不抢、不驱动用户正在用的系统 Chrome；Linux 云电脑用 `/workspace/qa/bin/open_direct_headed.py` 拉起后再 attach。Linux 上启动 Chrome for Testing 常需要 `--no-sandbox`，Windows 一般不这样套。环境配置要写明机器标识、系统、版本和路径，不要只写「环境已就绪」。用前先探，路径和版本记在本机，不抄到别的机器。细则见 [box-ui-speed](sand-workflow:box-ui-speed)。
+
 ## 安全
 
 - 登录走 sign-in / vault / in-chat-forms
