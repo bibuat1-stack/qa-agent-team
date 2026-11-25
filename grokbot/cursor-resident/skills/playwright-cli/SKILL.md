@@ -1,8 +1,8 @@
 ---
 name: playwright-cli
 description: >-
-  用 Microsoft playwright-cli 做网页探路、抓 a11y 快照、点控、录制、抓网络与 console、生成定位器时使用。与
-  Playwright MCP 同类，适合 Shell 驱动；可重复回归仍以仓库脚本为准。
+  用 Microsoft playwright-cli 做网页探路、抓 a11y 快照、点控、录制、抓网络与
+  console、生成定位器时使用。网页探路默认用本技能，选型见 box-ui-speed。可重复回归仍以仓库脚本为准。不把三种工具写成并列可选。
 ---
 # playwright-cli（机器人优化版）
 
@@ -12,7 +12,7 @@ Microsoft 官方浏览器 CLI（当前环境已装 `@playwright/cli`）。独立
 
 1. 连接器 / API
 2. 仓库 Playwright 脚本回归
-3. 网页探路：Playwright MCP **或** playwright-cli **或** [agent-browser](sand-workflow:agent-browser)（三选一，不混抢同一测号）
+3. 网页探路：见 [box-ui-speed](sand-workflow:box-ui-speed)，默认本技能。不要把 Playwright MCP、agent-browser 写成并列可选。不混抢同一测号。
 4. 桌面 / canvas → computerUse
 
 同时加载 [box-ui-speed](sand-workflow:box-ui-speed)。
@@ -56,6 +56,19 @@ playwright-cli -s=<s> screenshot --filename=/workspace/<路径>.png
 网络：`requests` / `request N` / `route` 做 mock（仅测环境，生产配置禁止）。
 
 状态：`state-save` / `state-load` 可复用登录态文件，文件路径按项目隔离，**文件里不要把明文密码写进聊天或 Notion**。
+
+## 有头、无头怎么接
+
+怎么选见 [box-ui-speed](sand-workflow:box-ui-speed)「有头、无头和 Playwright Extension」。这里只补命令，不重抄实测数字。
+
+```bash
+playwright-cli -s=<s> state-save <登录态文件>
+playwright-cli -s=<s> state-load <登录态文件>
+playwright-cli -s=<s> attach --cdp
+playwright-cli -s=<s> attach --extension
+```
+
+边改脚本、不用盯画面：无头，脚本自己开浏览器，登录态用上面的 `state-save` / `state-load` 复用，不必靠插件。要盯着看、边改边看：有头 Chrome for Testing 按 box-ui-speed 拉起后再跑。接已经打开、已经登录的窗口，优先 `attach --cdp`，只接自己拉起的 Chrome for Testing。插件接已打开的有头窗口用 `attach --extension`；配好自动连接 token 可自动连，token 不写进仓库、聊天或技能正文。无头不要走 `attach --extension`：登录态仍用 `state-save` / `state-load`，或对自己拉起的无头 Chrome for Testing 走 `attach --cdp`。
 
 改脚本不要每次重新 `open` 页面或重新登录。同一会话继续 `snapshot` 和操作；登录态用 `state-save` / `state-load`。要看有头窗口时，只 `attach --cdp` 接到自己拉起的 Chrome for Testing，禁止接或驱动平台桌面 Chrome。测试执行不要抢浏览器，也不要和其他探路工具混开抢同一测号会话。正式复测下结论仍须当轮现取证，不得拿旧截图当结论。
 
