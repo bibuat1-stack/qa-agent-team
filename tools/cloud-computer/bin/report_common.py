@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import re
 import struct
@@ -67,6 +68,8 @@ BLOCKED_PARTS = {"secrets", "leases"}
 
 META_KIND = {"meta", "batch", "report", "批次", "报告", "元数据"}
 PROJECT_KEYS = ("project", "项目", "project_name", "项目名")
+THEME_KEYS = ("theme", "主题", "theme_id")
+ACCENT_KEYS = ("accent", "主色", "brand", "主色调")
 BATCH_KEYS = ("batch", "批次", "batch_name", "批次名")
 SLUG_KEYS = ("slug", "简称", "short_name", "name_key", "需求简称")
 ENV_KEYS = ("environment", "env", "环境", "site", "站点")
@@ -258,6 +261,40 @@ dialog { border: 1px solid var(--line); border-radius: 10px; padding: 16px; max-
 dialog img { max-width: 92vw; max-height: 82vh; display: block; }
 dialog::backdrop { background: rgba(20, 18, 14, .55); }
 .dialog-bar { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 8px; }
+
+.masthead {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: var(--brand, var(--navy));
+  color: #fff;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 0 0 20px;
+}
+.mast-mark {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 750;
+  font-size: 18px;
+  letter-spacing: .02em;
+}
+.mast-text { min-width: 0; }
+.mast-project {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .06em;
+  opacity: .92;
+}
+.masthead h1 { color: #fff; margin: 0; font-size: 24px; }
+.conclusion, .reqbox, .linkbox { border-top: 3px solid var(--brand, var(--navy)); }
 @media print {
   body { background: #fff; }
   .filters, .shot-open, .dialog-bar { display: none !important; }
@@ -594,6 +631,8 @@ def empty_meta() -> dict:
         "time": "",
         "timezone": "Asia/Shanghai",
         "conclusion": "",
+        "theme": "",
+        "accent": "",
         "sample": False,
         "requirement_points": [],
     }
@@ -610,6 +649,8 @@ def fill_meta(target: dict, source: dict) -> None:
         "time": TIME_KEYS,
         "timezone": ZONE_KEYS,
         "conclusion": CONCLUSION_KEYS,
+        "theme": THEME_KEYS,
+        "accent": ACCENT_KEYS,
     }
     for field, keys in mapping.items():
         if not target.get(field):
@@ -913,7 +954,238 @@ def md_escape(text: str) -> str:
     return re.sub(r"([\\`*_{}\[\]()#+])", r"\\\1", text or "")
 
 
-def html_head(title: str) -> list[str]:
+
+def _norm_name(value: str) -> str:
+    return re.sub(r"[\s\-_/·．.]+", "", (value or "").strip().lower())
+
+
+PROJECT_THEMES = {
+    "ceopay": {
+        "id": "ceopay",
+        "aliases": ("ceopay", "t8tceopay", "ceopay业务", "ceopay业务线"),
+        "label": "CEOpay",
+        "family": "T8T",
+        "mark": "CE",
+        "brand": "#0f5f6b",
+        "bg": "#eef4f3",
+        "card": "#f7fbfb",
+        "navy": "#12353c",
+        "line": "#cfe0e2",
+        "ink": "#172326",
+        "muted": "#4d5d60",
+    },
+    "multisite": {
+        "id": "multisite",
+        "aliases": ("多站点", "多站点彩票", "t8t多站点", "彩票", "t8tlottery"),
+        "label": "多站点彩票",
+        "family": "T8T",
+        "mark": "多",
+        "brand": "#b45309",
+        "bg": "#f8f3ea",
+        "card": "#fffaf3",
+        "navy": "#5c2e08",
+        "line": "#ecd8b8",
+        "ink": "#2a1c10",
+        "muted": "#6b5340",
+    },
+    "antpay": {
+        "id": "antpay",
+        "aliases": ("antpay", "t8tantpay", "ant pay"),
+        "label": "AntPay",
+        "family": "T8T",
+        "mark": "AP",
+        "brand": "#3730a3",
+        "bg": "#f3f2f8",
+        "card": "#fbfaff",
+        "navy": "#1e1b4b",
+        "line": "#d9d6ef",
+        "ink": "#1c1830",
+        "muted": "#5b5773",
+    },
+    "t8t": {
+        "id": "t8t",
+        "aliases": ("t8t", "t8t游戏"),
+        "label": "T8T",
+        "family": "",
+        "mark": "T8",
+        "brand": "#1e3a5f",
+        "bg": "#eef2f6",
+        "card": "#f7f9fc",
+        "navy": "#152a46",
+        "line": "#d0d9e4",
+        "ink": "#17202a",
+        "muted": "#536174",
+    },
+    "xinjijin": {
+        "id": "xinjijin",
+        "aliases": ("新资金", "资金项目", "xinjijin"),
+        "label": "新资金",
+        "family": "",
+        "mark": "资",
+        "brand": "#166534",
+        "bg": "#eef6f0",
+        "card": "#f6fbf7",
+        "navy": "#14532d",
+        "line": "#cde5d4",
+        "ink": "#14241a",
+        "muted": "#4c6a55",
+    },
+    "go": {
+        "id": "go",
+        "aliases": ("go", "go电子", "go游戏"),
+        "label": "GO 电子",
+        "family": "",
+        "mark": "GO",
+        "brand": "#6d28d9",
+        "bg": "#f4f0fa",
+        "card": "#fbf8ff",
+        "navy": "#3b0764",
+        "line": "#ddd0f0",
+        "ink": "#1f1530",
+        "muted": "#5d5072",
+    },
+    "m3": {
+        "id": "m3",
+        "aliases": ("m3", "m3支付", "m3+支付", "m3＋支付"),
+        "label": "M3",
+        "family": "",
+        "mark": "M3",
+        "brand": "#334155",
+        "bg": "#f1f3f6",
+        "card": "#f8fafc",
+        "navy": "#1e293b",
+        "line": "#d4dbe3",
+        "ink": "#1b222c",
+        "muted": "#5b6572",
+    },
+}
+
+
+def _hsl_to_hex(h: float, s: float, l: float) -> str:
+    h = h / 360.0
+    def hue(p, q, t):
+        if t < 0:
+            t += 1
+        if t > 1:
+            t -= 1
+        if t < 1 / 6:
+            return p + (q - p) * 6 * t
+        if t < 1 / 2:
+            return q
+        if t < 2 / 3:
+            return p + (q - p) * (2 / 3 - t) * 6
+        return p
+    if s == 0:
+        r = g = b = l
+    else:
+        q = l * (1 + s) if l < 0.5 else l + s - l * s
+        p = 2 * l - q
+        r = hue(p, q, h + 1 / 3)
+        g = hue(p, q, h)
+        b = hue(p, q, h - 1 / 3)
+    return f"#{int(r*255+0.5):02x}{int(g*255+0.5):02x}{int(b*255+0.5):02x}"
+
+
+def theme_from_name(name: str) -> dict:
+    seed = (name or "未指定项目").strip() or "未指定项目"
+    hue = int(hashlib.sha1(seed.encode("utf-8")).hexdigest()[:8], 16) % 360
+    mark = seed[:2]
+    return {
+        "id": "custom",
+        "label": seed,
+        "family": "",
+        "mark": mark,
+        "brand": _hsl_to_hex(hue, 0.48, 0.32),
+        "bg": _hsl_to_hex(hue, 0.18, 0.95),
+        "card": _hsl_to_hex(hue, 0.12, 0.98),
+        "navy": _hsl_to_hex(hue, 0.40, 0.20),
+        "line": _hsl_to_hex(hue, 0.14, 0.84),
+        "ink": "#1a1a1a",
+        "muted": "#5a574f",
+    }
+
+
+def _match_preset(value: str) -> dict | None:
+    needle = _norm_name(value)
+    if not needle:
+        return None
+    exact = []
+    prefix = []
+    for theme in PROJECT_THEMES.values():
+        names = {theme["id"], _norm_name(theme["label"]), *(_norm_name(a) for a in theme["aliases"])}
+        names.discard("")
+        if needle in names:
+            exact.append(theme)
+            continue
+        # 只允许项目名比别名更具体，如「T8T CEOpay 后台」对上 ceopay；不要把单独的「T8T」误配成 CEOpay
+        longer = [name for name in names if needle.startswith(name) and len(name) >= 4]
+        if longer:
+            prefix.append((max(len(n) for n in longer), theme))
+    if exact:
+        return dict(exact[0])
+    if prefix:
+        prefix.sort(key=lambda item: item[0], reverse=True)
+        return dict(prefix[0][1])
+    return None
+
+
+def resolve_theme(meta: dict | None) -> dict:
+    meta = meta or {}
+    explicit = (meta.get("theme") or "").strip()
+    project = (meta.get("project") or "").strip()
+    theme = _match_preset(explicit) or _match_preset(project)
+    if theme is None:
+        theme = theme_from_name(project or explicit or "未指定项目")
+        if not project and not explicit:
+            theme["label"] = "未指定项目"
+            theme["mark"] = "测"
+    accent = (meta.get("accent") or "").strip()
+    if re.fullmatch(r"#?[0-9A-Fa-f]{6}", accent or ""):
+        theme["brand"] = accent if accent.startswith("#") else f"#{accent}"
+    return theme
+
+
+def theme_css(theme: dict) -> str:
+    return (
+        ":root {"
+        f"--brand:{theme['brand']};"
+        f"--bg:{theme['bg']};"
+        f"--card:{theme['card']};"
+        f"--navy:{theme['navy']};"
+        f"--line:{theme['line']};"
+        f"--ink:{theme['ink']};"
+        f"--muted:{theme['muted']};"
+        "}"
+    )
+
+
+def render_masthead(meta: dict, title: str) -> str:
+    theme = resolve_theme(meta)
+    label = theme.get("label") or (meta.get("project") or "未指定项目")
+    family = (theme.get("family") or "").strip()
+    kicker = f"{label} · {family}" if family and family not in label else label
+    mark = theme.get("mark") or (label[:2] if label else "测")
+    heading = title
+    for prefix in (label, (meta or {}).get("project") or ""):
+        prefix = (prefix or "").strip()
+        if not prefix:
+            continue
+        for sep in (f"{prefix} / ", f"{prefix}/", f"{prefix} · ", f"{prefix}·"):
+            if heading.startswith(sep):
+                heading = heading[len(sep):].lstrip()
+                break
+    return (
+        '<header class="masthead">'
+        f'<div class="mast-mark" aria-hidden="true">{html.escape(mark)}</div>'
+        '<div class="mast-text">'
+        f'<p class="mast-project">{html.escape(kicker)}</p>'
+        f"<h1>{html.escape(heading)}</h1>"
+        "</div></header>"
+    )
+
+
+def html_head(title: str, meta: dict | None = None) -> list[str]:
+    theme = resolve_theme(meta)
     return [
         "<!DOCTYPE html>",
         '<html lang="zh-CN">',
@@ -923,6 +1195,7 @@ def html_head(title: str) -> list[str]:
         f"<title>{html.escape(title)}</title>",
         "<style>",
         SHARED_CSS,
+        theme_css(theme),
         "</style>",
         "</head>",
         "<body>",

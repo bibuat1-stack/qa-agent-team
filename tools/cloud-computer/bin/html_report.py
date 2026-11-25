@@ -22,7 +22,7 @@
 
 可选的批次元数据，可用单独一行 {"type": "meta", ...}，也可写在用例上：
 
-  project/项目, batch/批次, slug/简称, environment/env/环境, side/前后台,
+  project/项目, theme/主题, accent/主色, batch/批次, slug/简称, environment/env/环境, side/前后台,
   machine/机器, time/测试时间, timezone/时区, conclusion/结论,
   requirement_points/需求点
 
@@ -65,6 +65,7 @@ from report_common import (
     is_confirm_alias,
     load_document,
     report_title,
+    render_masthead,
     result_counts,
     render_prose,
     render_shot_figure,
@@ -165,10 +166,10 @@ def render_report(
             numbered.append((index, row))
             row["_anchor_index"] = index
 
-    parts = html_head(title)
+    parts = html_head(title, meta)
     if meta.get("sample"):
         parts.append('<p class="banner">本页是报告版式样例，数据已经脱敏，不是一次真实测试的结论。</p>')
-    parts.append(f"<h1>{html.escape(title)}</h1>")
+    parts.append(render_masthead(meta, title))
 
     env_line = []
     if meta.get("env"):

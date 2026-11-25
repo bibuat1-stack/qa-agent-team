@@ -42,6 +42,7 @@ from report_common import (
     render_prose,
     render_shot_figure,
     report_title,
+    render_masthead,
     shot_dialog_html,
     style_name,
 )
@@ -132,10 +133,10 @@ def render_bugs_html(
 ) -> str:
     title = report_title(meta, generated_at, kind="bugs")
     notes: list[str] = []
-    parts = html_head(title)
+    parts = html_head(title, meta)
     if meta.get("sample"):
         parts.append('<p class="banner">本页是缺陷文档样例，数据已经脱敏，不是一次真实测试的结论。依据如为示例出处，已在栏内标明。</p>')
-    parts.append(f"<h1>{html.escape(title)}</h1>")
+    parts.append(render_masthead(meta, title))
     when = format_shanghai(meta.get("time") or "", generated_at)
     env_line = "；".join(
         part

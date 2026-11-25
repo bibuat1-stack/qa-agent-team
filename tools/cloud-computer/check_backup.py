@@ -337,12 +337,78 @@ def test_qa_ready(tmp: Path) -> None:
     check(marker.read_text(encoding="utf-8") == "--clean", "--clean 没有把参数传给体检")
 
 
+def brand_decl(document: str) -> str:
+    marker = "--brand:"
+    start = document.find(marker)
+    if start < 0:
+        return ""
+    end = document.find(";", start)
+    return document[start:end]
+
+
+def test_project_brands(tmp: Path) -> None:
+    batch = tmp / "themes"
+    batch.mkdir()
+    (batch / "results.jsonl").write_text(
+        json.dumps(
+            {"id": "DEMO-1", "title": "示例", "result": "失败", "summary": "密码=demo-account-pass"},
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    brands: dict[str, str] = {}
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
+    for project in ("CEOpay", "T8T", "T8T CEOpay", "多站点彩票", "未登记甲", "未登记乙"):
+        dest = batch / project.replace(" ", "-")
+        dest.mkdir()
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(HTML_REPORT),
+                str(batch / "results.jsonl"),
+                "--project",
+                project,
+                "-o",
+                str(dest) + "/",
+            ],
+            cwd=batch,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        check(result.returncode == 0, f"{project} 报告退出码 {result.returncode}: {result.stderr}")
+        reports = sorted(dest.glob("*-report.html"))
+        bugs = sorted(dest.glob("*-bugs.html"))
+        check(len(reports) == 1 and len(bugs) == 1, f"{project} 没有同时写出正报告和缺陷文档")
+        if not reports or not bugs:
+            continue
+        report = reports[0].read_text(encoding="utf-8")
+        bug = bugs[0].read_text(encoding="utf-8")
+        report_brand = brand_decl(report)
+        bug_brand = brand_decl(bug)
+        check(bool(report_brand), f"{project} 报告没有 --brand")
+        check(report_brand == bug_brand, f"{project} 正报告和缺陷文档 --brand 不一致")
+        check("密码=demo-account-pass" in report and "密码=***" not in report, f"{project} 不应改写测号密码")
+        brands[project] = report_brand
+    check(brands.get("CEOpay") == "--brand:#0f5f6b", f"CEOpay 主色不对：{brands.get('CEOpay')}")
+    check(brands.get("T8T") == "--brand:#1e3a5f", f"单独的 T8T 主色不对：{brands.get('T8T')}")
+    check(brands.get("T8T") != brands.get("CEOpay"), "单独的 T8T 误配成了 CEOpay")
+    check(brands.get("T8T CEOpay") == brands.get("CEOpay"), "T8T CEOpay 应使用 CEOpay 主色")
+    named = [brands.get(name) for name in ("CEOpay", "T8T", "多站点彩票", "未登记甲", "未登记乙")]
+    check(all(named), f"有项目没有生成 --brand：{named}")
+    check(len(set(named)) == len(named), f"不同项目的 --brand 没有区分开：{named}")
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as raw:
         tmp = Path(raw)
         test_box_health(tmp)
         test_live_proc(tmp)
         test_html_report(tmp)
+        test_project_brands(tmp)
         test_qa_ready(tmp)
     if FAILURES:
         print("\n".join(FAILURES), file=sys.stderr)
