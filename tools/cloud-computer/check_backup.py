@@ -173,14 +173,15 @@ def test_html_report(tmp: Path) -> None:
     batch = tmp / "batch"
     batch.mkdir()
     (batch / "step.png").write_bytes(tiny_png())
-    secret = "example-secret-value"
+    account_password = "demo-account-pass"
+    token_value = "merchant-token-value"
     rows = [
         {
             "id": "DEMO-1",
             "title": "示例",
             "result": "失败",
-            "summary": f"密码={secret}",
-            "password": secret,
+            "summary": f"密码={account_password} token={token_value}",
+            "password": account_password,
             "shots": [{"file": "step.png", "caption": "红框标出按钮", "box": [1, 2, 3, 4]}],
         },
         {
@@ -204,16 +205,37 @@ def test_html_report(tmp: Path) -> None:
         check=False,
     )
     check(result.returncode == 0, f"html_report 退出码 {result.returncode}: {result.stderr}")
-    report = (batch / "report.html").read_text(encoding="utf-8")
+    reports = sorted(batch.glob("*-report.html"))
+    check(len(reports) == 1, f"应生成一份带简称和时间的报告，实际 {[path.name for path in reports]}")
+    check(not (batch / "report.html").exists(), "不应再默认写成 report.html")
+    report = reports[0].read_text(encoding="utf-8")
     check("data:image/png;base64," in report, "报告没有内嵌 png")
-    check("left:1px;top:2px;width:3px;height:4px" in report, "红框坐标没有写进报告")
+    check(
+        "left:100.0000%;top:200.0000%;width:300.0000%;height:400.0000%" in report,
+        "红框坐标没有按原图尺寸写进报告",
+    )
     check("红框标出按钮" in report, "白话说明不在图旁")
-    check(secret not in report, "报告里仍有密钥")
+    check(f"密码={account_password}" in report, "测号密码应保留明文")
+    check("密码=***" not in report, "不应把测号密码写成 ***")
+    check(token_value not in report, "报告里仍有 token")
     check("should-not-leak" not in report, "报告里仍有 Bearer 后面的值")
-    check("密码=***" in report and "Bearer ***" in report, "脱敏替换不完整")
+    check("token=***" in report and "Bearer ***" in report, "token 或 Bearer 没有脱敏")
     check(report.count("data:image") == 1, "范围外的文件不应被嵌进报告")
-    check("<script" not in report and "http://" not in report and "https://" not in report, "报告引用了外链或脚本")
-    check("通过 1，失败 1" in result.stdout, "stdout 没有计数")
+    check("http://" not in report and "https://" not in report, "报告引用了外链")
+    check("<script src=" not in report, "报告引用了外链脚本")
+    check("失败 1" in result.stdout and "通过 1" in result.stdout, "stdout 没有计数")
+    bug_htmls = sorted(batch.glob("*-bugs.html"))
+    bug_mds = sorted(batch.glob("*-bugs.md"))
+    check(len(bug_htmls) == 1 and len(bug_mds) == 1, "有失败时应写出同前缀缺陷文档")
+    prefix = reports[0].name[: -len("-report.html")]
+    check(bug_htmls[0].name == f"{prefix}-bugs.html", "缺陷文档前缀与正报告不一致")
+    check(bug_mds[0].name == f"{prefix}-bugs.md", "缺陷 Markdown 前缀与正报告不一致")
+    for extra in (bug_htmls[0], bug_mds[0]):
+        body = extra.read_text(encoding="utf-8")
+        check(f"密码={account_password}" in body, f"{extra.name} 应保留测号密码")
+        check(token_value not in body and "should-not-leak" not in body, f"{extra.name} 里仍有 token")
+        check("token=***" in body, f"{extra.name} 没有把 token 写成 ***")
+        check("缺，待补" in body, f"{extra.name} 没有把缺的依据标成待补")
 
     missing = subprocess.run(
         [sys.executable, str(HTML_REPORT), str(tmp / "missing.jsonl")],
@@ -315,12 +337,78 @@ def test_qa_ready(tmp: Path) -> None:
     check(marker.read_text(encoding="utf-8") == "--clean", "--clean 没有把参数传给体检")
 
 
+def brand_decl(document: str) -> str:
+    marker = "--brand:"
+    start = document.find(marker)
+    if start < 0:
+        return ""
+    end = document.find(";", start)
+    return document[start:end]
+
+
+def test_project_brands(tmp: Path) -> None:
+    batch = tmp / "themes"
+    batch.mkdir()
+    (batch / "results.jsonl").write_text(
+        json.dumps(
+            {"id": "DEMO-1", "title": "示例", "result": "失败", "summary": "密码=demo-account-pass"},
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    brands: dict[str, str] = {}
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
+    for project in ("CEOpay", "T8T", "T8T CEOpay", "多站点彩票", "未登记甲", "未登记乙"):
+        dest = batch / project.replace(" ", "-")
+        dest.mkdir()
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(HTML_REPORT),
+                str(batch / "results.jsonl"),
+                "--project",
+                project,
+                "-o",
+                str(dest) + "/",
+            ],
+            cwd=batch,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        check(result.returncode == 0, f"{project} 报告退出码 {result.returncode}: {result.stderr}")
+        reports = sorted(dest.glob("*-report.html"))
+        bugs = sorted(dest.glob("*-bugs.html"))
+        check(len(reports) == 1 and len(bugs) == 1, f"{project} 没有同时写出正报告和缺陷文档")
+        if not reports or not bugs:
+            continue
+        report = reports[0].read_text(encoding="utf-8")
+        bug = bugs[0].read_text(encoding="utf-8")
+        report_brand = brand_decl(report)
+        bug_brand = brand_decl(bug)
+        check(bool(report_brand), f"{project} 报告没有 --brand")
+        check(report_brand == bug_brand, f"{project} 正报告和缺陷文档 --brand 不一致")
+        check("密码=demo-account-pass" in report and "密码=***" not in report, f"{project} 不应改写测号密码")
+        brands[project] = report_brand
+    check(brands.get("CEOpay") == "--brand:#0f5f6b", f"CEOpay 主色不对：{brands.get('CEOpay')}")
+    check(brands.get("T8T") == "--brand:#1e3a5f", f"单独的 T8T 主色不对：{brands.get('T8T')}")
+    check(brands.get("T8T") != brands.get("CEOpay"), "单独的 T8T 误配成了 CEOpay")
+    check(brands.get("T8T CEOpay") == brands.get("CEOpay"), "T8T CEOpay 应使用 CEOpay 主色")
+    named = [brands.get(name) for name in ("CEOpay", "T8T", "多站点彩票", "未登记甲", "未登记乙")]
+    check(all(named), f"有项目没有生成 --brand：{named}")
+    check(len(set(named)) == len(named), f"不同项目的 --brand 没有区分开：{named}")
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory() as raw:
         tmp = Path(raw)
         test_box_health(tmp)
         test_live_proc(tmp)
         test_html_report(tmp)
+        test_project_brands(tmp)
         test_qa_ready(tmp)
     if FAILURES:
         print("\n".join(FAILURES), file=sys.stderr)

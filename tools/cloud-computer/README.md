@@ -9,6 +9,8 @@
 | `qa-ready.sh` | `/workspace/qa/qa-ready.sh` |
 | `bin/box_health.py` | `/workspace/qa/bin/box_health.py` |
 | `bin/html_report.py` | `/workspace/qa/bin/html_report.py` |
+| `bin/bug_report.py` | `/workspace/qa/bin/bug_report.py` |
+| `bin/report_common.py` | `/workspace/qa/bin/report_common.py` |
 | `bin/browser_defaults.py` | `/workspace/qa/bin/browser_defaults.py` |
 | `bin/open_direct_headed.py` | `/workspace/qa/bin/open_direct_headed.py` |
 | `bin/README-browser.md` | `/workspace/qa/bin/README-browser.md` |
@@ -20,6 +22,8 @@ mkdir -p /workspace/qa/bin
 install -m 0755 tools/cloud-computer/qa-ready.sh /workspace/qa/qa-ready.sh
 install -m 0755 tools/cloud-computer/bin/box_health.py /workspace/qa/bin/box_health.py
 install -m 0755 tools/cloud-computer/bin/html_report.py /workspace/qa/bin/html_report.py
+install -m 0755 tools/cloud-computer/bin/bug_report.py /workspace/qa/bin/bug_report.py
+install -m 0755 tools/cloud-computer/bin/report_common.py /workspace/qa/bin/report_common.py
 install -m 0755 tools/cloud-computer/bin/browser_defaults.py /workspace/qa/bin/browser_defaults.py
 install -m 0755 tools/cloud-computer/bin/open_direct_headed.py /workspace/qa/bin/open_direct_headed.py
 install -m 0644 tools/cloud-computer/bin/README-browser.md /workspace/qa/bin/README-browser.md
@@ -33,7 +37,7 @@ install -m 0644 tools/cloud-computer/bin/README-browser.md /workspace/qa/bin/REA
 
 `box_health.py` 的提示门槛是 2048 MiB。低于门槛时只在摘要里提示总控，退出码仍是 0，不拦截开工、开浏览器或收尾。每次把 SwapFree 写进摘要和 `health.jsonl`。`--clean` 只删除过期租约文件和没有进程引用的临时浏览器配置，不结束任何进程。
 
-`html_report.py` 读当前目录的 `results.jsonl`，把自带原图的 `report.html` 写到同目录。图片用 data URI 嵌进文件；提供 `box` 时在图上画红框，白话写在图旁。不要把 `secrets` 或 `leases` 里的文件交给它。
+`html_report.py` 读当前目录的 `results.jsonl`，按「需求简称-上海时间-report.html」写到同目录，不再默认 `report.html`。有缺陷时同目录再写出同一前缀的 `*-bugs.html` 和 `*-bugs.md`。`bug_report.py` 与 `report_common.py` 必须和它放在同一目录，否则无法互相导入。图片用 data URI 嵌进文件；提供 `box` 时在图上画红框，白话写在图旁。不要把 `secrets` 或 `leases` 里的文件交给它。
 
 本地核对（不进 CI 的用例收集）：
 
