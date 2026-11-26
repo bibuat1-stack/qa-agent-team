@@ -2,7 +2,7 @@
 name: playwright-best-practices
 description: >-
   写或评审 Playwright UI 自动化、选定位策略、用自动等待与 expect 断言、规避 flaky
-  时使用。定位器可自愈；需求已写明或资金账务不得为跑绿改断言，需求没写清且非这两类可按实测改断言并标明依据。与
+  时使用。定位器可自愈；需求已写明或资金账务不得为跑绿改断言，需求没写清且非这两类可按实测改断言并标明依据。断言优先核对业务结果，不要只断言元素还在。与
   automation-regression、box-ui-speed、e2e-debugger、webapp-testing、playwright-cli、agent-browser
   互补；不替代探路选型与失败分诊。用户说 Playwright 最佳实践、定位器、auto-wait、expect、flaky 时优先加载。
 ---
@@ -74,7 +74,7 @@ await page.waitForTimeout(3000);
 
 - **优先 web-first `expect`**：可见、可点、文案、URL 会自动重试到超时  
 - **禁止**用固定 `waitForTimeout` 当同步手段；动画/淡出等稳定态用 `toBeHidden` / `toBeAttached({ attached: false })` 等条件等待  
-- 动作后验状态：URL、关键文案、控件 enabled/hidden  
+- 动作后先验业务结果：该跳到哪、金额和状态对不对、关键文案是不是预期的；控件 enabled/hidden 可作补充，不能单独拿「某个控件还在」或「按钮消失了」代替业务结果  
 - 非 UI 值用普通 `expect`（不重试）；接口用 `APIRequestContext` + `expect(response).toBeOK()`  
 
 ```typescript
@@ -87,7 +87,7 @@ await expect(page).toHaveURL(/\/done/);
 
 定位器只是“怎么找到那个控件”。前端改了类名或 testid，控件还在、意图不变时，可把定位换成更稳的写法（仍走上面的优先级），或在探路时按 [box-ui-speed](sand-workflow:box-ui-speed) 的自愈顺序换策略。
 
-断言是“业务上该怎样”，按依据分情况处理：
+断言是“业务上该怎样”，优先核对业务结果（跳转、金额、状态、关键文案），不要只断言某个控件还在。按依据分情况处理：
 
 - 需求已经写明，或属于资金账务：页面和预期不符就是缺陷。禁止为了跑绿改断言、删断言或放宽断言。
 - 需求没写清，又不是资金账务或需求里已经写明的点：可以按页面实际行为改断言，但必须标明这是「实测归纳」，写清思考依据，并先改用例和断言再重跑。不能在红了的当次运行里悄悄把期望改成现状就算通过。资金账务不能只靠页面现状当成上线通过。
