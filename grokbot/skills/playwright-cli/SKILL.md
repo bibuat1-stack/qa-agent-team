@@ -1,8 +1,9 @@
 ---
 name: playwright-cli
 description: >-
-  用 Microsoft playwright-cli 做网页探路、抓 a11y 快照、点控、录制、抓网络与
-  console、生成定位器时使用。网页探路默认用本技能，选型见 box-ui-speed。可重复回归仍以仓库脚本为准。不把三种工具写成并列可选。
+  用 Microsoft playwright-cli 做网页探路、抓 a11y 快照、点控、录制、抓网络与 console、生成定位器时使用。与
+  Playwright MCP 同类，适合 Shell 驱动；可重复回归仍以仓库脚本为准。先按当前机器的系统和已有环境选方式，不要混用 Linux 云电脑与
+  Windows 本机的路径和命令。落脚本时定位器可自愈；需求已写明或资金账务不得按现状改断言，需求没写清且非这两类可按实测改断言并标明依据。
 ---
 # playwright-cli（机器人优化版）
 
@@ -12,7 +13,7 @@ Microsoft 官方浏览器 CLI（当前环境已装 `@playwright/cli`）。独立
 
 1. 连接器 / API
 2. 仓库 Playwright 脚本回归
-3. 网页探路：见 [box-ui-speed](sand-workflow:box-ui-speed)，默认本技能。不要把 Playwright MCP、agent-browser 写成并列可选。不混抢同一测号。
+3. 网页探路：Playwright MCP **或** playwright-cli **或** [agent-browser](sand-workflow:agent-browser)（三选一，不混抢同一测号）
 4. 桌面 / canvas → computerUse
 
 同时加载 [box-ui-speed](sand-workflow:box-ui-speed)。
@@ -57,22 +58,9 @@ playwright-cli -s=<s> screenshot --filename=/workspace/<路径>.png
 
 状态：`state-save` / `state-load` 可复用登录态文件，文件路径按项目隔离，**文件里不要把明文密码写进聊天或 Notion**。
 
-## 有头、无头怎么接
+先认清当前是哪一台机器、什么系统，再探已有的 Node、playwright-cli、Python Playwright、Chrome for Testing、已打开的调试端口和登录态，选最合适且效率最高的方式，不要套死一套工具。Linux 云电脑和 Windows 本机的路径、命令和有头启动都不一样，换机器必须重新探，版本不必跨机器对齐。缺什么再补什么，已经能用的不要重装，也不要换一套抢同一会话。探完后写明机器标识、系统、版本、路径和选用原因。登录态和调试端口不能跨机器用。
 
-怎么选见 [box-ui-speed](sand-workflow:box-ui-speed)「有头、无头和 Playwright Extension」。这里只补命令，不重抄实测数字。
-
-```bash
-playwright-cli -s=<s> state-save <登录态文件>
-playwright-cli -s=<s> state-load <登录态文件>
-playwright-cli -s=<s> attach --cdp
-playwright-cli -s=<s> attach --extension
-```
-
-边改脚本、不用盯画面：无头，脚本自己开浏览器，登录态用上面的 `state-save` / `state-load` 复用，不必靠插件。要盯着看、边改边看：有头 Chrome for Testing 按 box-ui-speed 拉起后再跑。接已经打开、已经登录的窗口，优先 `attach --cdp`，只接自己拉起的 Chrome for Testing。插件接已打开的有头窗口用 `attach --extension`；配好自动连接 token 可自动连，token 不写进仓库、聊天或技能正文。无头不要走 `attach --extension`：登录态仍用 `state-save` / `state-load`，或对自己拉起的无头 Chrome for Testing 走 `attach --cdp`。
-
-改脚本不要每次重新 `open` 页面或重新登录。同一会话继续 `snapshot` 和操作；登录态用 `state-save` / `state-load`。要看有头窗口时，只 `attach --cdp` 接到自己拉起的 Chrome for Testing，禁止接或驱动平台桌面 Chrome。测试执行不要抢浏览器，也不要和其他探路工具混开抢同一测号会话。正式复测下结论仍须当轮现取证，不得拿旧截图当结论。
-
-先认清当前是哪台机器、什么系统、这台上已有什么，再选最合适且效率最高的方式。不能只说「本地」，要写机器标识。Linux 云电脑和 Windows 本机不能混用路径和命令；macOS 或其他架构也先探再选，不要套现成路径。同一账号下的不同电脑要换机器重新探。各台的 Node、CLI、浏览器版本不必跨机器对齐。登录态和调试端口只属于当前这台机器，不能跨机器、跨系统用。8791 是云电脑桌面浏览器的问题，不要套到用户电脑。用户电脑本身需要的 VPN 或系统代理不要盲目关掉。有头启动按系统分开：Windows 本机有真实桌面，但仍不抢、不驱动用户正在用的系统 Chrome；Linux 云电脑用 `/workspace/qa/bin/open_direct_headed.py` 拉起后再 attach。Linux 上启动 Chrome for Testing 常需要 `--no-sandbox`，Windows 一般不这样套。环境配置要写明机器标识、系统、版本和路径，不要只写「环境已就绪」。用前先探，路径和版本记在本机，不抄到别的机器。细则见 [box-ui-speed](sand-workflow:box-ui-speed)。
+改脚本不要每次重新 `open` 页面或重新登录。同一会话继续 `snapshot` 和操作；登录态用 `state-save` / `state-load`，或本机已有的等价方式。要看有头窗口时，只 `attach --cdp` 接到自己拉起的 Chrome for Testing，禁止接或驱动平台桌面 Chrome。Windows 用 PowerShell；Linux 云电脑用 bash，有头常加 `--no-sandbox`。测试执行不要抢浏览器，也不要和其他探路工具混开抢同一测号会话。云电脑默认直连，8791 不要套到用户电脑。正式复测下结论仍须当轮现取证，不得拿旧截图当结论。
 
 ## 安全
 
@@ -85,6 +73,8 @@ playwright-cli -s=<s> attach --extension
 ## 探路后固化
 
 跑通后用 `recording-stop` 或 `generate-locator` 产出，立刻写成仓库 Playwright 脚本。第二次起跑脚本。
+
+落脚本时，定位器可按更稳写法替换。断言必须有依据：需求已经写明或属于资金账务时，不能按当次页面现状改期望；需求没写清，又不是资金账务或需求里已经写明的点时，可按页面实际改断言，必须标明「实测归纳」并写清依据，先改用例和断言再重跑，不能在当次失败里悄悄改期望当通过。官方 CLI 包里还有 plan → generate → heal 的生成说明，采用时同样遵守这条界限：heal 可以改定位，也可以在需求没写清且非大事时按实测改断言并标明依据；不得把需求已写明或资金账务的期望改成页面现状来跑绿。
 
 ## 安装（本机已就绪时可跳过）
 
